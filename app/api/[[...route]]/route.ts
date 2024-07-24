@@ -5,6 +5,7 @@ import categories from "./categories";
 import sizes from "./sizes";
 import colors from "./colors";
 import products from "./products";
+import orders from "./orders";
 // import transactions from "./transactions";
 // import summary from "./summary";
 // import plaid from "./plaid";
@@ -19,7 +20,8 @@ const routes = app
   .route("/categories", categories)
   .route("/sizes", sizes)
   .route("/colors", colors)
-  .route("/products", products);
+  .route("/products", products)
+  .route("/orders", orders);
 // .route("/transactions", transactions)
 // .route("/summary", summary)
 // .route("/plaid", plaid)

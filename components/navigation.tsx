@@ -33,10 +33,7 @@ const routes = [
         href: "/admin/orders",
         label: "Orders"
     },
-    {
-        href: "/admin/settings",
-        label: "Settings"
-    }
+
 ]
 
 const Navigation = () => {

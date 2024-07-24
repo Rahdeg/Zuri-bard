@@ -222,16 +222,7 @@ const app = new Hono()
         id: z.string().optional(),
       })
     ),
-    zValidator(
-      "json",
-      insertProductSchema.pick({
-        name: true,
-        categoryId: true,
-        price: true,
-        isFeatured: true,
-        isArchived: true,
-      })
-    ),
+    zValidator("json", extendedProductSchema),
     async (c) => {
       const auth = getAuth(c);
       const { id } = c.req.valid("param");
@@ -245,17 +236,61 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      const [data] = await db
+      // Update product details
+      const [updatedProduct] = await db
         .update(products)
-        .set(values)
+        .set({
+          name: values.name,
+          categoryId: values.categoryId,
+          price: values.price,
+          isFeatured: values.isFeatured,
+          isArchived: values.isArchived,
+        })
         .where(eq(products.id, id))
         .returning();
 
-      if (!data) {
+      if (!updatedProduct) {
         return c.json({ error: "Not found" }, 404);
       }
 
-      return c.json({ data });
+      // Update sizes
+      if (values.sizes && Array.isArray(values.sizes)) {
+        // Delete existing sizes
+        await db.delete(productSizes).where(eq(productSizes.productId, id));
+
+        // Insert new sizes
+        for (const sizeId of values.sizes) {
+          await db.insert(productSizes).values({ productId: id, sizeId });
+        }
+      }
+
+      // Update colors
+      if (values.colors && Array.isArray(values.colors)) {
+        // Delete existing colors
+        await db.delete(productColors).where(eq(productColors.productId, id));
+
+        // Insert new colors
+        for (const colorId of values.colors) {
+          await db.insert(productColors).values({ productId: id, colorId });
+        }
+      }
+
+      // Update images
+      if (values.images && Array.isArray(values.images)) {
+        // Delete existing images
+        await db.delete(images).where(eq(images.productId, id));
+
+        // Insert new images
+        for (const imageUrlObj of values.images) {
+          await db.insert(images).values({
+            id: createId(),
+            productId: id,
+            url: imageUrlObj.url,
+          });
+        }
+      }
+
+      return c.json({ data: updatedProduct });
     }
   )
   .delete(

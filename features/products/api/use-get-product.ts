@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { client } from "@/lib/hono";
+import { modifyEndpointContent } from "@/lib/utils";
 
 export const useGetProduct = (id?: string) => {
   const query = useQuery({
@@ -11,11 +12,14 @@ export const useGetProduct = (id?: string) => {
         param: { id },
       });
       if (!response.ok) {
-        throw new Error("failed to fetch products");
+        return null;
       }
 
       const { data } = await response.json();
-      return data;
+
+      const modifiedData = modifyEndpointContent(data);
+
+      return modifiedData;
     },
   });
   return query;

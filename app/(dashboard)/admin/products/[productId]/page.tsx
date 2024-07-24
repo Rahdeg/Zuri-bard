@@ -1,13 +1,7 @@
 'use client'
 
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-} from "@/components/ui/sheet";
 
+import { extendedProductSchema } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useGetCategories } from "@/features/categories/api/use-get-categories";
@@ -59,11 +53,27 @@ const NewProductPage = ({ params }: { params: { productId: string } }) => {
         "You are about to delete this product"
     );
 
+
+
+    const create = params.productId.length < 4;
+
     const router = useRouter();
 
     const productQuery = useGetProduct(params.productId);
     const editMutation = useEditProduct(params.productId);
     const deleteMutation = useDeleteProduct(params.productId);
+
+
+
+    const handleDelete = async () => {
+        const ok = await confirm();
+
+        if (ok) {
+            deleteMutation.mutate();
+        }
+
+        router.push('/admin/products')
+    }
 
     const isPending = editMutation.isPending || deleteMutation.isPending;
     const isLoading = productQuery.isLoading;
@@ -114,53 +124,83 @@ const NewProductPage = ({ params }: { params: { productId: string } }) => {
             ...values,
             price: parseFloat(values.price), // Ensure price is a number
         };
+        if (products) {
+            editMutation.mutate(transformedValues, {
+                onSuccess: () => {
+                    form.reset();
+                    router.push('/admin/products')
+                },
+            });
+        } else {
+            mutation.mutate(transformedValues, {
+                onSuccess: () => {
+                    form.reset();
+                    router.push('/admin/products')
+                },
+            });
+        }
 
-        mutation.mutate(transformedValues, {
-            onSuccess: () => {
-                form.reset();
-                router.push('/admin/products')
-            },
-        });
     };
+
+
+
+
+
+
 
     const title = products ? "Edit product" : "Create product";
     const description = products ? "Edit a product" : "Add a new product";
     const toastMessage = products ? "Product updated" : "Product created";
+    const disabled = mutation.isPending || editMutation.isPending
 
     return (
         <>
             <ConfirmDialog />
-            <div className='max-w-screen-2xl mx-auto w-full pb-10 -mt-24'>
-                <Card className='border-none drop-shadow-sm'>
-                    <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
-                        <CardTitle className='flex flex-col items-start justify-center'>
-                            <h1 className='text-2xl font-bold'>
-                                {title}
-                            </h1>
-                            <p className='text-base'>{description}</p>
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-1">
-                        {isLoading ? (
-                            <div className='flex justify-center items-center h-full'>
-                                <Loader className="size-6 text-slate-300 animate-spin" />
-                            </div>
-                        ) : (
-                            <ProductForm
-                                initialData={products}
-                                onSubmit={onSubmit}
-                                disabled={mutation.isPending}
-                                categoryOptions={categoryOptions}
-                                onCreateCategory={onCreateCategory}
-                                colorOptions={colorOptions}
-                                sizeOptions={sizeOptions}
-                            />
-                        )}
-                    </CardContent>
-                </Card>
-            </div>
+            {
+                isLoading ? (
+                    <div className='flex justify-center items-center h-full w-full'>
+                        <Loader className="size-6 text-slate-300 animate-spin" />
+                    </div>
+                ) : (
+                    <div className='max-w-screen-2xl mx-auto w-full pb-10 -mt-24'>
+                        <Card className='border-none drop-shadow-sm'>
+                            <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
+                                <CardTitle className='flex flex-col items-start justify-center'>
+                                    <h1 className='text-2xl font-bold'>
+                                        {title}
+                                    </h1>
+                                    <p className='text-base'>{description}</p>
+                                </CardTitle>
+                                {
+                                    products && (
+                                        <Button variant='destructive' size='icon' onClick={handleDelete} disabled={isPending}>
+                                            <Trash className=" w-5 h-5" />
+                                        </Button>
+                                    )
+                                }
+                            </CardHeader>
+                            <CardContent className="flex-1">
+
+                                <ProductForm
+                                    initialData={products}
+                                    onSubmit={onSubmit}
+                                    disabled={disabled}
+                                    categoryOptions={categoryOptions}
+                                    onCreateCategory={onCreateCategory}
+                                    colorOptions={colorOptions}
+                                    sizeOptions={sizeOptions}
+                                />
+                            </CardContent>
+                        </Card>
+                    </div>
+                )
+            }
+
         </>
     );
 };
 
 export default NewProductPage;
+
+
+

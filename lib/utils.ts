@@ -107,3 +107,13 @@ export function formatPercentage(
 
   return result;
 }
+
+export function modifyEndpointContent(data: any) {
+  // Modify the price to a string
+  data.price = data.price?.toString();
+
+  // Transform the images array into an array of objects with a 'url' property
+  data.images = data.images.map((imageUrl: any) => ({ url: imageUrl }));
+
+  return data;
+}

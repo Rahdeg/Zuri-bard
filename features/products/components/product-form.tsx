@@ -72,7 +72,7 @@ const ProductForm: React.FC<Props> = ({
 }) => {
 
 
-    console.log("inits", initialData);
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData ? {
@@ -104,11 +104,10 @@ const ProductForm: React.FC<Props> = ({
 
     const handleSubmit = (values: FormValues) => {
         onSubmit({ ...values, colors: selectedColors, sizes: selectedSizes });
+        // console.log({ ...values, colors: selectedColors, sizes: selectedSizes })
     };
 
-    const handleDelete = () => {
-        onDelete?.();
-    };
+
 
     return (
         <Form {...form} >
@@ -121,7 +120,7 @@ const ProductForm: React.FC<Props> = ({
                             <FormLabel>Images</FormLabel>
                             <FormControl>
                                 <ImageUpload
-                                    value={field.value.map((image) => image.url ? image.url : image)}
+                                    value={field.value.map((image) => image.url)}
                                     disable={disabled}
                                     onChange={(url) => field.onChange([...field.value, { url }])}
                                     onRemove={(url) => field.onChange([...field.value.filter((current) => current.url !== url)])}
@@ -260,12 +259,6 @@ const ProductForm: React.FC<Props> = ({
                 <Button className="w-full" disabled={isButtonDisabled}>
                     {action}
                 </Button>
-                {initialData && (
-                    <Button type="button" disabled={disabled} onClick={handleDelete} className="w-full flex gap-x-2" variant="outline">
-                        <Trash className="w-4 h-4" />
-                        <p>Delete product</p>
-                    </Button>
-                )}
             </form>
         </Form>
     );
