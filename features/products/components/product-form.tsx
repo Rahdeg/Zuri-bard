@@ -131,7 +131,7 @@ const ProductForm: React.FC<Props> = ({
                     )}
                 />
 
-                <div className=' grid grid-cols-3 gap-y-1 w-full'>
+                <div className=' grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-4 w-full'>
                     <FormField
                         name="name"
                         control={form.control}
@@ -256,7 +256,7 @@ const ProductForm: React.FC<Props> = ({
                 </div>
 
 
-                <Button className="w-full" disabled={isButtonDisabled}>
+                <Button className="" disabled={isButtonDisabled}>
                     {action}
                 </Button>
             </form>

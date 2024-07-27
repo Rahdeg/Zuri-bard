@@ -53,6 +53,7 @@ const app = new Hono()
         createdAt: products.createdAt,
         sizes: sql`array_agg(distinct ${sizes.name})`,
         colors: sql`array_agg(distinct ${colors.name})`,
+        images: sql`array_agg(distinct ${images.url})`,
       })
       .from(products)
       .leftJoin(categories, eq(categories.id, products.categoryId))
@@ -60,6 +61,7 @@ const app = new Hono()
       .leftJoin(sizes, eq(sizes.id, productSizes.sizeId))
       .leftJoin(productColors, eq(productColors.productId, products.id))
       .leftJoin(colors, eq(colors.id, productColors.colorId))
+      .leftJoin(images, eq(images.productId, products.id))
       .groupBy(
         products.id,
         categories.id,
@@ -103,8 +105,8 @@ const app = new Hono()
           isFeatured: products.isFeatured,
           isArchived: products.isArchived,
           createdAt: products.createdAt,
-          sizes: sql`array_agg(distinct ${sizes.id})`,
-          colors: sql`array_agg(distinct ${colors.id})`,
+          sizes: sql`array_agg(distinct ${sizes.value})`,
+          colors: sql`array_agg(distinct ${colors.value})`,
           images: sql`array_agg(distinct ${images.url})`,
         })
         .from(products)

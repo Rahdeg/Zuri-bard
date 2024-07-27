@@ -76,3 +76,99 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* src/Hero.css */
+
+.hero {
+  position: relative;
+  text-align: center;
+  color: black;
+  padding: 50px 0;
+}
+
+.slick-slide {
+  position: relative;
+}
+
+.shoe-image {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+.annotations {
+  position: absolute;
+  top: 30%;
+  right: 10%;
+  text-align: left;
+}
+
+.annotation {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+
+.annotation.fit {
+  top: 30%;
+  left: 10%;
+}
+
+.annotation.comfort {
+  bottom: 20%;
+  right: 10%;
+}
+
+.annotation.airFlow {
+  bottom: 10%;
+  left: 20%;
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  text-align: left;
+}
+
+.hero-text h1 {
+  font-size: 3em;
+  margin: 0;
+}
+
+.hero-text p {
+  margin: 10px 0;
+}
+
+.shop-now {
+  background-color: #ff5722;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.shop-now:hover {
+  background-color: #e64a19;
+}
+
+.brands {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.brands span {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.brands img {
+  height: 24px;
+  margin-right: 5px;
+}
