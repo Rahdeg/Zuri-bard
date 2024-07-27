@@ -113,7 +113,7 @@ export const columns: ColumnDef<ResponseType>[] = [
         {row.original.sizes.map((size, index) => (
           <Button
             key={index}
-            className="h-6 w-6 bg-blue-600 "
+            className="h-10 w-14 bg-blue-600 "
 
           >
             {size}

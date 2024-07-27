@@ -8,7 +8,7 @@ export const ProductContainer = () => {
 
 
     return (
-        <div className=' flex items-start justify-start gap-x-4 w-full'>
+        <div className=' flex flex-col md:flex-row items-center md:items-start justify-start gap-x-4 w-full'>
             <ProductCategory />
             <ProductList />
 

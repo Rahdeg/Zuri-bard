@@ -13,6 +13,7 @@ import Select from '@/components/select';
 import AmountInput from '@/components/amount-input';
 import ImageUpload from '@/components/ui/image-upload';
 import SelectableButtonForm from '@/components/select-button';
+import { getMatchingIds } from '@/lib/utils';
 
 
 const formSchema = z.object({
@@ -103,11 +104,16 @@ const ProductForm: React.FC<Props> = ({
     // console.log(initialData.sizes);
 
     const handleSubmit = (values: FormValues) => {
-        onSubmit({ ...values, colors: selectedColors, sizes: selectedSizes });
-        // console.log({ ...values, colors: selectedColors, sizes: selectedSizes })
+
+        const colorIds = getMatchingIds(selectedColors, colorOptions);
+        const sizeIds = getMatchingIds(selectedSizes, sizeOptions)
+
+        onSubmit({ ...values, colors: colorIds, sizes: sizeIds });
+
     };
 
-
+    console.log(selectedColors, 'fre');
+    console.log(colorOptions, 'arr');
 
     return (
         <Form {...form} >
@@ -178,6 +184,7 @@ const ProductForm: React.FC<Props> = ({
                                         values={colorOptions}
                                         selectedOptions={selectedColors}
                                         setSelectedOptions={setSelectedColors}
+                                        color
 
                                     />
                                 </FormControl>

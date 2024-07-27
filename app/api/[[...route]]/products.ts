@@ -51,8 +51,8 @@ const app = new Hono()
         isFeatured: products.isFeatured,
         isArchived: products.isArchived,
         createdAt: products.createdAt,
-        sizes: sql`array_agg(distinct ${sizes.name})`,
-        colors: sql`array_agg(distinct ${colors.name})`,
+        sizes: sql`array_agg(distinct ${sizes.value})`,
+        colors: sql`array_agg(distinct ${colors.value})`,
         images: sql`array_agg(distinct ${images.url})`,
       })
       .from(products)

@@ -110,12 +110,12 @@ const NewProductPage = ({ params }: { params: { productId: string } }) => {
     }));
 
     const colorOptions = (colorQuery.data ?? []).map((color) => ({
-        label: color.name,
+        label: color.value,
         value: color.id,
     }));
 
     const sizeOptions = (sizeQuery.data ?? []).map((size) => ({
-        label: size.name,
+        label: size.value,
         value: size.id,
     }));
 

@@ -6,6 +6,7 @@ import { ShoppingBag, Star } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import { useGetProducts } from '@/features/products/api/use-get-products'
+import { ProductCard } from './product-card'
 
 
 // const products = [
@@ -66,41 +67,12 @@ export const ProductList = () => {
 
     const router = useRouter();
     return (
-        <div className=' flex items-center justify-center '>
+        <div className=' flex items-center justify-center w-full lg:w-auto '>
 
-            <div className=" grid grid-cols-3 gap-4 pl-20 ">
+            <div className=" grid grid-cols-1 lg:grid-cols-3 gap-4 lg:pl-20 w-full lg:w-auto ">
                 {products ? (
                     products.map(product => (
-                        <div key={product.id} className="flex-shrink-0 w-80  p-4 ">
-
-                            <div className='w-full h-48 bg-[#f7f7f7f7]  shadow-sm rounded-t-2xl relative'>
-                                <Image
-                                    src={product.images[0]}
-                                    alt={product.name}
-                                    fill
-                                    className=' object-cover'
-                                />
-                            </div>
-
-                            <div className="p-2 flex items-end justify-between w-full  mt-3">
-                                <div className=' flex flex-col gap-y-3'>
-                                    <p className="text-sm text-[#666656] flex"> <Star className=' mr-2 size-4 fill-[#ED5221] text-[#ED5221]' />(11.6k Reviews)</p>
-                                    <h3 className="text-lg font-medium">{product.name}</h3>
-                                    <div className=' flex items-center justify-start gap-x-3'>
-                                        <p className="text-lg font-semibold">{product.price}</p>
-                                        <p className="text-sm text-gray-500">Sold Out {`60%`}</p>
-                                    </div>
-                                </div>
-
-
-                                <button className=" size-10 bg-[#ED5221] text-white rounded-full flex items-center justify-center"
-                                    onClick={() => router.push(`/shop/${product.id}`)}
-                                >
-
-                                    <ShoppingBag className=' text-white size-5' />
-                                </button>
-                            </div>
-                        </div>
+                        <ProductCard key={product.id} product={product} />
                     ))
                 ) : (
                     <div className=' flex items-center justify-center '>

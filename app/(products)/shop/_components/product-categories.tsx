@@ -17,7 +17,7 @@ export const ProductCategory = () => {
     const categories = categoriesQuery.data;
 
     return (
-        <div className=' flex flex-col'>
+        <div className=' flex flex-col w-full lg:w-auto'>
             <h1 className=' text-xl font-bold py-3 border-b-2 '>Product Categories</h1>
             <div className=' flex flex-col gap-y-2 py-2'>
                 {

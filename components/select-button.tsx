@@ -8,12 +8,13 @@ type Option = {
 };
 
 type SelectableButtonFormProps = {
+    color?: boolean;
     values: Option[];
     selectedOptions: string[];
     setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const SelectableButtonForm: React.FC<SelectableButtonFormProps> = ({ values, selectedOptions, setSelectedOptions }) => {
+const SelectableButtonForm: React.FC<SelectableButtonFormProps> = ({ values, selectedOptions, setSelectedOptions, color }) => {
     const toggleValue = (value: string) => {
         setSelectedOptions((prevSelectedOptions) =>
             prevSelectedOptions.includes(value)
@@ -24,14 +25,26 @@ const SelectableButtonForm: React.FC<SelectableButtonFormProps> = ({ values, sel
 
     return (
         <div className='flex space-x-3'>
-            {values.map((option) => (
+            {!color && values.map((option) => (
                 <Button
                     type="button"
                     key={option.value}
-                    className={cn('bg-slate-400', selectedOptions.includes(option.value) && "bg-blue-600")}
-                    onClick={() => toggleValue(option.value)}
+                    className={cn('bg-slate-400', selectedOptions.includes(option.label) && "bg-blue-600")}
+                    onClick={() => toggleValue(option.label)}
                 >
                     {option.label}
+                </Button>
+            ))}
+            {color && values.map((option) => (
+                <Button
+                    type="button"
+                    variant="outline"
+                    key={option.value}
+                    className={cn(' rounded-full w-10 h-10', selectedOptions.includes(option.label) && " border-2 border-black")}
+                    style={{ backgroundColor: option.label }}
+                    onClick={() => toggleValue(option.label)}
+                >
+
                 </Button>
             ))}
         </div>

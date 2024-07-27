@@ -5,6 +5,8 @@ import { Button } from "./ui/button";
 import Currency from "./ui/currency";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import useCart from "@/hooks/use-cart";
+import usePreviewModal from "@/hooks/use-preview-modal";
 
 interface InfoProps {
     data: Product;
@@ -14,11 +16,14 @@ const Info: React.FC<InfoProps> = ({ data }) => {
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
-    // const cart = useCart();
+    const cart = useCart();
+    const previewModal = usePreviewModal();
 
-    // const addToCart = () => {
-    //     cart.addItem(data);
-    // }
+    const addToCart = () => {
+        cart.addItem(data);
+        previewModal.onClose();
+
+    }
 
     const handleSizeClick = (size: string) => {
         if (selectedSize === size) {
@@ -91,7 +96,7 @@ const Info: React.FC<InfoProps> = ({ data }) => {
                 </p>
             </div>
             <div className="mt-10 flex items-center gap-x-3">
-                <Button variant="outline" className="flex  text-white items-center gap-x-2 bg-[#ED5221]" onClick={() => { }}>
+                <Button variant="outline" className="flex  text-white items-center gap-x-2 bg-[#ED5221]" onClick={addToCart}>
                     Add to Cart
                     <ShoppingCart />
                 </Button>

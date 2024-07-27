@@ -2,31 +2,31 @@
 
 import { useEffect, useState } from "react";
 
-export const formatter = new Intl.NumberFormat("en-US",{
-    style: "currency",
-    currency: "USD"
-  });
+export const formatter = new Intl.NumberFormat("en-NG", {
+  style: "currency",
+  currency: "NGN"
+});
 
-  interface CurrencyProps {
-    value?: string | number
+interface CurrencyProps {
+  value?: string | number
+}
+
+const Currency: React.FC<CurrencyProps> = ({
+  value
+}) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+    return null;
   }
 
-const Currency:React.FC<CurrencyProps> = ({
-    value
-}) => {
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
-
-    if(!isMounted){
-        return null;
-    }
-    
   return (
     <div className=" font-semibold">
-        {formatter.format(Number(value))}
+      {formatter.format(Number(value))}
     </div>
   )
 }

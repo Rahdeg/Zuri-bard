@@ -12,6 +12,7 @@ import { NewColorSheet } from "@/features/colors/components/new-color-sheet";
 import { EditColorSheet } from "@/features/colors/components/edit-color-sheet";
 import { NewProductSheet } from "@/features/products/components/new-product-sheet";
 import { EditProductSheet } from "@/features/products/components/edit-product-sheet";
+import PreviewModal from "@/components/preview-modal";
 // import { NewTransactionSheet } from "@/features/transactions/components/new-transaction-sheet";
 // import { EditTransactionSheet } from "@/features/transactions/components/edit-transaction-sheet";
 // import { SubscriptionModal } from "@/features/subscriptions/components/subscription-modal";
@@ -37,6 +38,7 @@ export const SheetProvider = () => {
             <EditColorSheet />
             <NewProductSheet />
             <EditProductSheet />
+            <PreviewModal />
             {/* <NewTransactionSheet />
             <EditTransactionSheet />
             <SubscriptionModal /> */}

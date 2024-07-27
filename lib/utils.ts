@@ -1,6 +1,7 @@
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
 import { eachDayOfInterval, format, isSameDay, subDays } from "date-fns";
+import { Product } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -116,4 +117,20 @@ export function modifyEndpointContent(data: any) {
   data.images = data.images.map((imageUrl: any) => ({ url: imageUrl }));
 
   return data;
+}
+
+export const getMatchingIds = (
+  colors: string[],
+  data: { label: string; value: string }[]
+): string[] => {
+  return data
+    .filter((item) => colors.includes(item.label))
+    .map((item) => item.value);
+};
+
+export function transformImages(product: Product): Product {
+  return {
+    ...product,
+    images: product.images.map((image) => ({ url: image })),
+  };
 }

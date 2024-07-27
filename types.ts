@@ -12,13 +12,16 @@ export interface Category {
 
 export interface Product {
   id: string;
-  category: Category;
   name: string;
-  price: string;
+  categoryId: never;
+  categoryName: string | null;
+  price: number;
   isFeatured: boolean;
-  size: Size;
-  color: Color;
-  images: Image[];
+  isArchived: boolean;
+  createdAt: string | null;
+  sizes: never;
+  colors: never;
+  images: never;
 }
 
 export interface Size {
