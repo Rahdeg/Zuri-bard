@@ -18,7 +18,6 @@ const ProductPage: React.FC<ProductPageProps> = ({
   const product = productQuery.data;
   // const suggestedProducts = await getProducts({categoryId: product?.category?.id});
 
-  console.log("proimage", product?.images);
 
   return (
     <div className=" bg-white">

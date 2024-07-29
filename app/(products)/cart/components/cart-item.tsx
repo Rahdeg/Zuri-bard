@@ -49,39 +49,34 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
                             {data.name}
                         </p>
                     </div>
-                    <div className="mt-1 flex flex-col items-start justify-center gap-y-5">
-                        <div className="flex items-center justify-center gap-x-2">
-                            {data.colors.map((color) => (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    key={color}
-                                    className=
-                                    "h-10 w-10 rounded-full border border-gray-600"
+                    <div className="mt-1 flex text-sm py-3 md:py-0">
+                        <div className=" ">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className=
+                                "h-10 w-10 rounded-full border border-gray-600"
 
-                                    style={{ backgroundColor: color }}
+                                style={{ backgroundColor: data.colors }}
 
-                                ></Button>
-                            ))}
+                            ></Button>
                         </div>
-                        <div className="flex items-center justify-center gap-x-2">
-                            {data.sizes.map((size) => (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    key={size}
-                                    className=
-                                    "bg-white border border-[#ED5221] text-black"
+                        <div className=" ml-2  pr-4">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className=
+                                "bg-white border border-[#ED5221] text-black"
 
 
 
-                                >
-                                    {size}
-                                </Button>
-                            ))}
+                            >
+                                {data.sizes}
+                            </Button>
                         </div>
 
                     </div>
+
                     <Currency value={data.price} />
                 </div>
             </div>

@@ -20,7 +20,7 @@ const Info: React.FC<InfoProps> = ({ data }) => {
     const previewModal = usePreviewModal();
 
     const addToCart = () => {
-        cart.addItem(data);
+        cart.addItem({ ...data, colors: selectedColor, sizes: selectedSize });
         previewModal.onClose();
 
     }

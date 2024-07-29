@@ -10,7 +10,7 @@ import {
   varchar,
   boolean,
 } from "drizzle-orm/pg-core";
-import z from "zod";
+import z, { number } from "zod";
 
 import { createInsertSchema } from "drizzle-zod";
 
@@ -142,6 +142,7 @@ export const orders = pgTable("orders", {
   id: text("id").primaryKey(),
   isPaid: boolean("is_paid").default(false),
   phone: text("phone").default(""),
+  totalAmount: integer("totalAmount").default(0),
   address: text("address").default(""),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -160,6 +161,8 @@ export const orderItems = pgTable("order_items", {
   productId: text("product_id")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
+  color: text("color").default(""),
+  size: text("size").default(""),
 });
 
 export const orderItemRelations = relations(orderItems, ({ one }) => ({

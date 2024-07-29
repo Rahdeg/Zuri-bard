@@ -7,6 +7,7 @@ import useCart from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
+import { useCheckout } from "./use-checkout";
 
 
 
@@ -14,6 +15,7 @@ const Summary = () => {
     const items = useCart((state) => state.items);
     const removeAll = useCart((state) => state.removeAll);
     const searchParams = useSearchParams();
+    const checkout = useCheckout();
 
     useEffect(() => {
         if (searchParams.get("success")) {
@@ -31,12 +33,28 @@ const Summary = () => {
     const totalPrice = items.reduce((total, item) => { return total + Number(item.price) }, 0)
 
     const onCheckout = async () => {
+
+        const productItems = items.map((item) => ({
+            productId: item.id, // renaming `id` to `productId`
+            color: item.colors || undefined, // ensuring color is a string or undefined
+            size: item.sizes || undefined, // ensuring size is a string or undefined
+        }));
+
+        checkout.mutate({ items: productItems });
         // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
         //     productIds: items.map((item) => item.id),
         // });
 
-        // window.location = response.data.url;
-        console.log("ids", { productIds: items.map((item) => item.id), })
+
+        // console.log("ids", { productDetails: items.map((item) => { item.id, item.colors, item.sizes }) })
+
+        // console.log("ids", {
+        //     productDetails: items.map((item) => ({
+        //         id: item.id,
+        //         colors: item.colors,
+        //         sizes: item.sizes
+        //     }))
+        // });
     }
 
     return (
@@ -52,7 +70,7 @@ const Summary = () => {
                     <Currency value={totalPrice} />
                 </div>
             </div>
-            <Button disabled={items.length === 0} className="w-full mt-6" onClick={onCheckout}>
+            <Button disabled={items.length === 0 || checkout.isPending} className="w-full mt-6" onClick={onCheckout} >
                 Checkout
             </Button>
         </div>

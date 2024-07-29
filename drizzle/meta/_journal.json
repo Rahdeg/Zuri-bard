@@ -15,6 +15,20 @@
       "when": 1721722992000,
       "tag": "0001_fantastic_songbird",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1722191971360,
+      "tag": "0002_fancy_charles_xavier",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1722202920594,
+      "tag": "0003_ambiguous_justin_hammer",
+      "breakpoints": true
     }
   ]
 }

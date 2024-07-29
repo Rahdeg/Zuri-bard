@@ -75,10 +75,13 @@ const app = new Hono()
         isPaid: orders.isPaid,
         phone: orders.phone,
         address: orders.address,
+        totalAmount: orders.totalAmount,
         createdAt: orders.createdAt,
         products: sql`json_agg(jsonb_build_object(
             'productId', ${orderItems.productId},
-            'productName', ${products.name}
+            'productName', ${products.name},
+            'size', ${orderItems.size},
+            'color', ${orderItems.color}
           ))`,
       })
       .from(orders)
@@ -87,6 +90,33 @@ const app = new Hono()
       .groupBy(orders.id);
 
     return c.json({ data });
-  });
+  })
+  .post(
+    "/bulk-delete",
+    clerkMiddleware(),
+    zValidator(
+      "json",
+      z.object({
+        ids: z.array(z.string()),
+      })
+    ),
+    async (c) => {
+      const auth = getAuth(c);
+      const values = c.req.valid("json");
+
+      if (!auth?.userId) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const data = await db
+        .delete(orders)
+        .where(inArray(orders.id, values.ids))
+        .returning({
+          id: orders.id,
+        });
+
+      return c.json({ data });
+    }
+  );
 
 export default app;

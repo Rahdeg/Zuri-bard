@@ -95,13 +95,11 @@ const ProductForm: React.FC<Props> = ({
 
     const { watch } = form;
     const name = watch('name');
-    // const sizes = watch('sizes');
     const isButtonDisabled = disabled || !name
 
     const [selectedSizes, setSelectedSizes] = useState<string[]>(initialData?.sizes || []);
     const [selectedColors, setSelectedColors] = useState<string[]>(initialData?.colors || []);
 
-    // console.log(initialData.sizes);
 
     const handleSubmit = (values: FormValues) => {
 
@@ -111,9 +109,6 @@ const ProductForm: React.FC<Props> = ({
         onSubmit({ ...values, colors: colorIds, sizes: sizeIds });
 
     };
-
-    console.log(selectedColors, 'fre');
-    console.log(colorOptions, 'arr');
 
     return (
         <Form {...form} >

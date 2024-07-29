@@ -8,6 +8,7 @@ import { DataTable } from '@/components/data-table'
 import { columns } from './columns'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetOrders } from '@/features/orders/api/use-get-orders'
+import { useBulkDeleteOrders } from '@/features/orders/api/use-bulk-delete-orders'
 
 
 
@@ -18,11 +19,12 @@ const SizePage = () => {
 
     const orderQuery = useGetOrders();
     const orders = orderQuery.data || [];
+    const deleteOrders = useBulkDeleteOrders();
 
 
-    const disabled = orderQuery.isLoading;
+    const disabled = orderQuery.isLoading || deleteOrders.isPending;
 
-
+    console.log("order", orders);
 
     if (orderQuery.isLoading) {
         return (
@@ -56,7 +58,12 @@ const SizePage = () => {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <DataTable columns={columns} data={orders} filterKey='name' disabled={disabled} onDelete={() => { }} />
+                    <DataTable columns={columns} data={orders} filterKey='name' disabled={disabled} onDelete={
+                        (row) => {
+                            const ids = row.map((r) => r.original.id);
+                            deleteOrders.mutate({ ids });
+                        }
+                    } />
                 </CardContent>
             </Card>
 

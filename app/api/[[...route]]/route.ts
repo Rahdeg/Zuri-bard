@@ -6,6 +6,8 @@ import sizes from "./sizes";
 import colors from "./colors";
 import products from "./products";
 import orders from "./orders";
+import checkout from "./checkout";
+import webhooks from "./webhooks";
 // import transactions from "./transactions";
 // import summary from "./summary";
 // import plaid from "./plaid";
@@ -21,7 +23,10 @@ const routes = app
   .route("/sizes", sizes)
   .route("/colors", colors)
   .route("/products", products)
-  .route("/orders", orders);
+  .route("/orders", orders)
+  .route("/checkout", checkout)
+  .route("/webhooks", webhooks);
+
 // .route("/transactions", transactions)
 // .route("/summary", summary)
 // .route("/plaid", plaid)

@@ -6,6 +6,7 @@ import { client } from "@/lib/hono";
 import { ColumnDef } from "@tanstack/react-table";
 import { InferResponseType } from "hono";
 import { ArrowUpDown } from "lucide-react";
+import { format } from "date-fns";
 
 
 export type ResponseType = InferResponseType<typeof client.api.orders.$get, 200>["data"][0];
@@ -45,7 +46,46 @@ export const columns: ColumnDef<ResponseType>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
-    }
+    },
+    cell: ({ row }) => (
+      <div className="flex items-center gap-x-2">
+        {
+          row.original.products.map((product) => product.productName).join(', ')
+        }
+      </div>
+    )
+  },
+  {
+    accessorKey: "products",
+    header: "Color",
+    cell: ({ row }) => (
+
+
+      <div className="grid grid-cols-2  gap-1">
+        {row.original.products.map((product, index) => (
+          <button
+            key={index}
+            className="h-6 w-6 rounded-full border"
+            style={{ backgroundColor: product.color }}
+          >
+
+          </button>
+        ))}
+      </div>
+    )
+  },
+  {
+    accessorKey: "products",
+    header: "Size",
+    cell: ({ row }) => (
+
+
+      <div className="flex items-center gap-x-2">
+        {
+          row.original.products.map((product) => product.size).join(', ')
+        }
+      </div>
+    )
   },
   {
     accessorKey: "phone",
@@ -74,6 +114,17 @@ export const columns: ColumnDef<ResponseType>[] = [
         </Button>
       )
     }
+  },
+  {
+    accessorKey: "totalAmount",
+    header: "Total Amount",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-x-2">
+        {
+          row.original.totalAmount
+        }
+      </div>
+    )
   },
   {
     accessorKey: "address",
