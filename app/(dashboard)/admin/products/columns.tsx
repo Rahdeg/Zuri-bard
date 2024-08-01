@@ -58,10 +58,24 @@ export const columns: ColumnDef<ResponseType>[] = [
         </Button>
       )
     }
+  }, {
+    accessorKey: "quantity",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Quantity
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    }
   },
 
+
   {
-    accessorKey: "categoryId",
+    accessorKey: "categoryName",
     header: ({ column }) => {
       return (
         <Button
@@ -75,7 +89,7 @@ export const columns: ColumnDef<ResponseType>[] = [
     }
   },
   {
-    accessorKey: "price",
+    accessorKey: "costPrice",
     header: ({ column }) => {
       return (
         <Button

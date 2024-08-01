@@ -15,6 +15,8 @@ interface ProductCardProps {
     product: Product
 }
 
+
+
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const [isMounted, setIsMounted] = useState(false);
     const router = useRouter();
@@ -65,7 +67,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     <p className="text-sm text-[#666656] flex"> <Star className=' mr-2 size-4 fill-[#ED5221] text-[#ED5221]' />(11.6k Reviews)</p>
                     <h3 className="text-lg font-medium">{product.name}</h3>
                     <div className=' flex items-center justify-start gap-x-3'>
-                        <Currency value={product.price} />
+                        <Currency value={product.sellingPrice} />
                         <p className="text-sm text-gray-500">Sold Out {`No`}</p>
                     </div>
                 </div>

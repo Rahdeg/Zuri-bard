@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
 import { useCheckout } from "./use-checkout";
+import { Product } from "@/types";
 
 
 
@@ -30,7 +31,7 @@ const Summary = () => {
     }, [searchParams, removeAll])
 
 
-    const totalPrice = items.reduce((total, item) => { return total + Number(item.price) }, 0)
+    const totalPrice = items.reduce((total, item) => { return total + Number(item.sellingPrice) }, 0)
 
     const onCheckout = async () => {
 

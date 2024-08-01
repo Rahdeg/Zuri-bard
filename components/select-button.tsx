@@ -1,6 +1,10 @@
+'use client'
 import React from 'react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
+import { Plus } from 'lucide-react';
+import { useNewColor } from '@/features/colors/hooks/use-new-color';
+import { useNewSize } from '@/features/sizes/hooks/use-new-size';
 
 type Option = {
     label: string;
@@ -15,6 +19,8 @@ type SelectableButtonFormProps = {
 };
 
 const SelectableButtonForm: React.FC<SelectableButtonFormProps> = ({ values, selectedOptions, setSelectedOptions, color }) => {
+
+
     const toggleValue = (value: string) => {
         setSelectedOptions((prevSelectedOptions) =>
             prevSelectedOptions.includes(value)
@@ -22,6 +28,18 @@ const SelectableButtonForm: React.FC<SelectableButtonFormProps> = ({ values, sel
                 : [...prevSelectedOptions, value]
         );
     };
+
+    const newColor = useNewColor();
+    const newSize = useNewSize();
+
+
+    const onClick = () => {
+        if (color) {
+            newColor.onOpen();
+        } else {
+            newSize.onOpen();
+        }
+    }
 
     return (
         <div className='flex space-x-3'>
@@ -47,6 +65,10 @@ const SelectableButtonForm: React.FC<SelectableButtonFormProps> = ({ values, sel
 
                 </Button>
             ))}
+
+            <Button className='' variant="outline" onClick={onClick} type='button'>
+                <Plus />
+            </Button>
         </div>
     );
 };

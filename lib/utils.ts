@@ -2,6 +2,7 @@ import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
 import { eachDayOfInterval, format, isSameDay, subDays } from "date-fns";
 import { Product } from "@/types";
+import { useGetAdmins } from "@/features/admin/api/use-get-admins";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -111,7 +112,9 @@ export function formatPercentage(
 
 export function modifyEndpointContent(data: any) {
   // Modify the price to a string
-  data.price = data.price?.toString();
+  data.costPrice = data.costPrice?.toString();
+  data.sellingPrice = data.sellingPrice?.toString();
+  data.quantity = data.quantity?.toString();
 
   // Transform the images array into an array of objects with a 'url' property
   data.images = data.images.map((imageUrl: any) => ({ url: imageUrl }));
@@ -128,7 +131,7 @@ export const getMatchingIds = (
     .map((item) => item.value);
 };
 
-export function transformImages(product: Product): Product {
+export function transformImages(product: Product): any {
   return {
     ...product,
     images: product.images.map((image) => ({ url: image })),

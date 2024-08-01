@@ -24,7 +24,7 @@ export const useEditColor = (id?: string) => {
     },
     onSuccess: () => {
       toast.success("Color updated");
-      queryClient.invalidateQueries({ queryKey: ["category", { id }] });
+      queryClient.invalidateQueries({ queryKey: ["color", { id }] });
       queryClient.invalidateQueries({ queryKey: ["colors"] });
       // queryClient.invalidateQueries({ queryKey: ["transactions"] });
       // queryClient.invalidateQueries({ queryKey: ["summary"] });

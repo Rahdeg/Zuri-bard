@@ -33,6 +33,14 @@ const routes = [
         href: "/admin/orders",
         label: "Orders"
     },
+    {
+        href: "/admin/expensis",
+        label: "Expensis"
+    },
+    {
+        href: "/admin/settings",
+        label: "Settings"
+    },
 
 ]
 

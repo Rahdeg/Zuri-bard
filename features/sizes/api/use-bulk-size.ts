@@ -22,7 +22,7 @@ export const useBulkDeleteSize = () => {
       return await response.json();
     },
     onSuccess: () => {
-      toast.success("Category deleted");
+      toast.success("Size deleted");
       queryClient.invalidateQueries({ queryKey: ["sizes"] });
       // queryClient.invalidateQueries({ queryKey: ["summary"] });
     },

@@ -92,7 +92,7 @@ const Info: React.FC<InfoProps> = ({ data }) => {
             <hr className="my-4" />
             <div className="mt-3 flex items-end justify-between">
                 <p className="text-2xl text-[#ED5221]">
-                    <Currency value={data?.price} />
+                    <Currency value={data?.sellingPrice} />
                 </p>
             </div>
             <div className="mt-10 flex items-center gap-x-3">

@@ -1,16 +1,11 @@
 import { relations } from "drizzle-orm";
 import {
   integer,
-  pgEnum,
   pgTable,
-  serial,
   text,
   timestamp,
-  uniqueIndex,
-  varchar,
   boolean,
 } from "drizzle-orm/pg-core";
-import z, { number } from "zod";
 
 import { createInsertSchema } from "drizzle-zod";
 
@@ -48,6 +43,23 @@ export const colors = pgTable("colors", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const expensis = pgTable("expensis", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  amount: integer("amount").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const admin = pgTable("admin", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  isAdmin: boolean("isAdmin").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const colorRelations = relations(colors, ({ many }) => ({
   productColors: many(productColors),
 }));
@@ -59,7 +71,9 @@ export const products = pgTable("products", {
     onDelete: "set null",
   }),
   name: text("name").notNull(),
-  price: integer("price").notNull(),
+  sellingPrice: integer("selling_price").notNull(),
+  costPrice: integer("cost_price").notNull(),
+  quantity: integer("quantity").notNull(),
   isFeatured: boolean("is_featured").default(false).notNull(),
   isArchived: boolean("is_archived").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
@@ -180,6 +194,8 @@ export const orderItemRelations = relations(orderItems, ({ one }) => ({
 export const insertCategorySchema = createInsertSchema(categories);
 export const insertSizeSchema = createInsertSchema(sizes);
 export const insertColorSchema = createInsertSchema(colors);
+export const insertExpensisSchema = createInsertSchema(expensis);
+export const insertAdminSchema = createInsertSchema(admin);
 export const insertProductSchema = createInsertSchema(products);
 export const insertImageSchema = createInsertSchema(images);
 export const insertOrderSchema = createInsertSchema(orders);

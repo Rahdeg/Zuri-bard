@@ -28,22 +28,15 @@ const formSchema = z.object({
     isFeatured: z.boolean(),
     isArchived: z.boolean(),
     name: z.string(),
-    price: z.string(), // Ensure price is a number
+    costPrice: z.string(),
+    sellingPrice: z.string(),
+    quantity: z.string(), // Ensure price is a number
     images: z.object({ url: z.string() }).array().nonempty(),
     sizes: z.string().array(),
     categoryId: z.string(),
 });
 
-interface ProductInitialData {
-    name?: string;
-    categoryId?: string;
-    price?: string;
-    isFeatured?: boolean;
-    isArchived?: boolean;
-    colors?: string[];
-    sizes?: string[];
-    images?: { url: string }[];
-}
+
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -95,7 +88,9 @@ const NewProductPage = ({ params }: { params: { productId: string } }) => {
         defaultValues: {
             name: "",
             categoryId: "",
-            price: "",
+            costPrice: "",
+            sellingPrice: "",
+            quantity: "",
             isFeatured: false,
             isArchived: false,
             colors: [],
@@ -122,7 +117,9 @@ const NewProductPage = ({ params }: { params: { productId: string } }) => {
     const onSubmit = (values: FormValues) => {
         const transformedValues = {
             ...values,
-            price: parseFloat(values.price), // Ensure price is a number
+            costPrice: parseFloat(values.costPrice),
+            sellingPrice: parseFloat(values.sellingPrice),
+            quantity: parseFloat(values.quantity), // Ensure price is a number
         };
         if (products) {
             editMutation.mutate(transformedValues, {

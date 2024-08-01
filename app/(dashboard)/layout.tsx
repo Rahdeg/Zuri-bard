@@ -1,8 +1,8 @@
 
 import Header from '@/components/header';
+import { client } from '@/lib/hono';
 import { SignOutButton } from '@clerk/nextjs';
-import { auth, getAuth } from '@clerk/nextjs/server';
-import Link from 'next/link';
+import { currentUser } from '@clerk/nextjs/server';
 import React from 'react'
 
 
@@ -10,15 +10,22 @@ type Props = {
     children: React.ReactNode;
 }
 
-const DashboardLayout = ({ children }: Props) => {
+const DashboardLayout = async ({ children }: Props) => {
 
-    const user = auth();
+    const user = await currentUser()
 
-    if (user.userId !== process.env.NEXT_ADMIN_ID) {
+
+    const response = await client.api.admin.$get();
+    const { data } = await response.json();
+
+    const isAdmin = data.some(admin => admin.email === user?.emailAddresses[0].emailAddress);
+
+
+    if (!isAdmin && user?.id !== process.env.NEXT_ADMIN_ID) {
         return (
             <div className=' w-full h-screen  flex items-center justify-center bg-red-300'>
                 <p className=' items-center justify-center flex flex-col'>
-                    You are not authorized to access this page. <span className=''>
+                    You are not authorized to access this page Request for Permission. <span className=''>
                         <SignOutButton />
                     </span>
                 </p>

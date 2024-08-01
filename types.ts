@@ -11,17 +11,33 @@ export interface Category {
 }
 
 export interface Product {
+  sizes: string[];
+  colors: string[];
+  images: string[];
   id: string;
   name: string;
-  categoryId: never;
+  categoryId: string | null;
   categoryName: string | null;
-  price: number;
+  costPrice: number;
+  sellingPrice: number;
+  quantity: number;
   isFeatured: boolean;
   isArchived: boolean;
   createdAt: string | null;
-  sizes: never;
-  colors: never;
-  images: never;
+}
+
+interface Images {
+  url: string;
+}
+
+export interface CartProduct {
+  sizes: string | null;
+  colors: string | null;
+  images: Images[];
+  id: string;
+  name: string;
+  sellingPrice: number;
+  quantity: number;
 }
 
 export interface Size {

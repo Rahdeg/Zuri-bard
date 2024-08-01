@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
-// import accounts from "./accounts";
 import categories from "./categories";
 import sizes from "./sizes";
 import colors from "./colors";
@@ -8,10 +7,8 @@ import products from "./products";
 import orders from "./orders";
 import checkout from "./checkout";
 import webhooks from "./webhooks";
-// import transactions from "./transactions";
-// import summary from "./summary";
-// import plaid from "./plaid";
-// import subscriptions from "./subscriptions";
+import expensis from "./expensis";
+import admin from "./admin";
 
 export const runtime = "nodejs";
 
@@ -25,7 +22,9 @@ const routes = app
   .route("/products", products)
   .route("/orders", orders)
   .route("/checkout", checkout)
-  .route("/webhooks", webhooks);
+  .route("/webhooks", webhooks)
+  .route("/expensis", expensis)
+  .route("/admin", admin);
 
 // .route("/transactions", transactions)
 // .route("/summary", summary)

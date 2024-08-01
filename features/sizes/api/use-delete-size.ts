@@ -20,7 +20,7 @@ export const useDeleteSize = (id?: string) => {
     },
     onSuccess: () => {
       toast.success("Size deleted");
-      queryClient.invalidateQueries({ queryKey: ["category", { id }] });
+      queryClient.invalidateQueries({ queryKey: ["size", { id }] });
       queryClient.invalidateQueries({ queryKey: ["sizes"] });
       // queryClient.invalidateQueries({ queryKey: ["transactions"] });
       // queryClient.invalidateQueries({ queryKey: ["summary"] });

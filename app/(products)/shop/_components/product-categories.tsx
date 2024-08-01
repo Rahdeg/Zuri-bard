@@ -7,12 +7,6 @@ import React from 'react'
 export const ProductCategory = () => {
 
 
-    // const categories = [
-    //     { id: 1, name: "Men's Shoes" },
-    //     { id: 2, name: "Women's Shoes" },
-    //     { id: 3, name: "Kid's Shoes" },
-    // ]
-
     const categoriesQuery = useGetCategories();
     const categories = categoriesQuery.data;
 

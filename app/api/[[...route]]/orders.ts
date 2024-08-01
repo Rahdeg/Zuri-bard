@@ -15,6 +15,24 @@ import { z } from "zod";
 
 import { Hono } from "hono";
 
+// Define types for Order and OrderItem
+type OrderItem = {
+  productId: string;
+  productName: string;
+  size: string | null;
+  color: string | null;
+};
+
+type Order = {
+  id: string;
+  isPaid: boolean | null;
+  phone: string | null;
+  address: string | null;
+  totalAmount: number | null;
+  createdAt: Date | null;
+  products: OrderItem[];
+};
+
 const additionalFieldsSchema = z.object({
   products: z.array(z.string()),
 });
@@ -77,19 +95,25 @@ const app = new Hono()
         address: orders.address,
         totalAmount: orders.totalAmount,
         createdAt: orders.createdAt,
-        products: sql`json_agg(jsonb_build_object(
+        products: sql<OrderItem[]>`json_agg(jsonb_build_object(
             'productId', ${orderItems.productId},
             'productName', ${products.name},
             'size', ${orderItems.size},
             'color', ${orderItems.color}
-          ))`,
+          ))::jsonb`,
       })
       .from(orders)
       .leftJoin(orderItems, eq(orderItems.orderId, orders.id))
       .leftJoin(products, eq(products.id, orderItems.productId))
-      .groupBy(orders.id);
+      .groupBy(orders.id)
+      .execute();
 
-    return c.json({ data });
+    const ordersWithProducts = data.map((order) => ({
+      ...order,
+      products: order.products as unknown as OrderItem[],
+    }));
+
+    return c.json({ data: ordersWithProducts });
   })
   .post(
     "/bulk-delete",

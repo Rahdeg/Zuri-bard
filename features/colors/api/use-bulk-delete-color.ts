@@ -22,7 +22,7 @@ export const useBulkDeleteColor = () => {
       return await response.json();
     },
     onSuccess: () => {
-      toast.success("Category deleted");
+      toast.success("Color deleted");
       queryClient.invalidateQueries({ queryKey: ["colors"] });
       // queryClient.invalidateQueries({ queryKey: ["summary"] });
     },

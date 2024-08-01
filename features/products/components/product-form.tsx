@@ -21,17 +21,22 @@ const formSchema = z.object({
     isFeatured: z.boolean(),
     isArchived: z.boolean(),
     name: z.string(),
-    price: z.string(), // Ensure price is a number
+    costPrice: z.string(),
+    sellingPrice: z.string(),
+    quantity: z.string(), // Ensure price is a number
     images: z.object({ url: z.string() }).array().nonempty(),
     sizes: z.string().array(),
     categoryId: z.string(),
 });
 
 
-interface ProductInitialData {
+
+export interface ProductInitialData {
     name?: string;
     categoryId?: string;
-    price?: string;
+    costPrice?: string;
+    sellingPrice?: string;
+    quantity?: string;
     isFeatured?: boolean;
     isArchived?: boolean;
     colors?: string[];
@@ -81,7 +86,9 @@ const ProductForm: React.FC<Props> = ({
         } : {
             name: '',
             images: [],
-            price: '',
+            costPrice: '',
+            sellingPrice: "",
+            quantity: "",
             categoryId: '',
             colors: [],
             sizes: [],
@@ -147,6 +154,19 @@ const ProductForm: React.FC<Props> = ({
                     />
 
                     <FormField
+                        name="quantity"
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Quantity</FormLabel>
+                                <FormControl>
+                                    <Input disabled={disabled} placeholder="1" {...field} />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
                         name="categoryId"
                         control={form.control}
                         render={({ field }) => (
@@ -206,10 +226,27 @@ const ProductForm: React.FC<Props> = ({
 
                     <FormField
                         control={form.control}
-                        name='price'
+                        name='costPrice'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Price</FormLabel>
+                                <FormLabel>Cost Price</FormLabel>
+                                <AmountInput
+                                    {...field}
+                                    disabled={disabled}
+                                    placeholder="0.00"
+
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name='sellingPrice'
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel> Selling Price</FormLabel>
                                 <AmountInput
                                     {...field}
                                     disabled={disabled}
@@ -257,10 +294,12 @@ const ProductForm: React.FC<Props> = ({
                     />
                 </div>
 
+                <div className=' flex items-center justify-center w-full'>
+                    <Button size="lg" className="w-full" disabled={isButtonDisabled}>
+                        {action}
+                    </Button>
+                </div>
 
-                <Button className="" disabled={isButtonDisabled}>
-                    {action}
-                </Button>
             </form>
         </Form>
     );

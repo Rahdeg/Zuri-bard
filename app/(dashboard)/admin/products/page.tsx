@@ -26,6 +26,8 @@ const ColorPage = () => {
     const disabled = productsQuery.isLoading || deleteProducts.isPending;
     const router = useRouter();
 
+    console.log(products, "pro");
+
 
     if (productsQuery.isLoading) {
         return (
@@ -52,12 +54,12 @@ const ColorPage = () => {
             <Card className='border-none drop-shadow-sm'>
                 <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
                     <CardTitle className=' flex flex-col items-start justify-center'>
-                        <h1 className=' text-2xl font-bold'>
+                        <h1 className=' text-2xl font-bold text-blue-900'>
                             Products ({products.length})
                         </h1>
-                        <p className=' text-base'>Manage products for the Store</p>
+                        <p className=' text-base text-blue-900'>Manage products for the Store</p>
                     </CardTitle>
-                    <Button onClick={() => router.push(`/admin/products/new`)}>
+                    <Button onClick={() => router.push(`/admin/products/new`)} className=' bg-blue-900'>
                         <Plus className=' size-4 mr-2' />
                         Add new
                     </Button>

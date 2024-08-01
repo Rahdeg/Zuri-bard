@@ -66,7 +66,7 @@ export const columns: ColumnDef<ResponseType>[] = [
           <button
             key={index}
             className="h-6 w-6 rounded-full border"
-            style={{ backgroundColor: product.color }}
+            style={{ backgroundColor: product.color! }}
           >
 
           </button>

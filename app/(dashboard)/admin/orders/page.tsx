@@ -24,7 +24,10 @@ const SizePage = () => {
 
     const disabled = orderQuery.isLoading || deleteOrders.isPending;
 
-    console.log("order", orders);
+    const paidOrdersLength = orders.filter(order => order.isPaid === true).length;
+    const unPaidOrdersLength = orders.filter(order => order.isPaid === false).length;
+
+
 
     if (orderQuery.isLoading) {
         return (
@@ -49,13 +52,21 @@ const SizePage = () => {
     return (
         <div className=' max-w-screen-2xl mx-auto w-full pb-10 -mt-24'>
             <Card className='border-none drop-shadow-sm'>
-                <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
+                <CardHeader className='gap-y-2 flex-row items-center justify-between'>
                     <CardTitle className=' flex flex-col items-start justify-center'>
-                        <h1 className=' text-2xl font-bold'>
-                            Orders
+                        <h1 className=' text-2xl font-bold text-blue-900'>
+                            Orders ({orders.length})
                         </h1>
-                        <p className=' text-base'>See  products Orders</p>
+                        <p className=' text-base text-blue-900'>See  products Orders</p>
                     </CardTitle>
+                    <div className=' flex flex-col md:flex-row items-center justify-center gap-2'>
+                        <Button variant="outline" className='text-base text-blue-900 '>
+                            <p className=' mr-2'>Paid Order</p>   ({paidOrdersLength})
+                        </Button>
+                        <Button variant="outline" className='text-base text-blue-900 '>
+                            <p className=' mr-2'>UnPaid Order</p>   ({unPaidOrdersLength})
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <DataTable columns={columns} data={orders} filterKey='name' disabled={disabled} onDelete={

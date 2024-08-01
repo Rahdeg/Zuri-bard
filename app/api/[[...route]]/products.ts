@@ -25,7 +25,9 @@ const extendedProductSchema = insertProductSchema
   .pick({
     name: true,
     categoryId: true,
-    price: true,
+    costPrice: true,
+    sellingPrice: true,
+    quantity: true,
     isFeatured: true,
     isArchived: true,
   })
@@ -35,25 +37,21 @@ import { Hono } from "hono";
 
 const app = new Hono()
   .get("/", clerkMiddleware(), async (c) => {
-    // const auth = getAuth(c);
-
-    // if (!auth?.userId) {
-    //   return c.json({ error: "unauthorized" }, 401);
-    // }
-
     const data = await db
       .select({
         id: products.id,
         name: products.name,
-        categoryId: sql`array_agg(distinct ${categories.name})`,
+        categoryId: products.categoryId,
         categoryName: categories.name,
-        price: products.price,
+        costPrice: products.costPrice,
+        sellingPrice: products.sellingPrice,
+        quantity: products.quantity,
         isFeatured: products.isFeatured,
         isArchived: products.isArchived,
         createdAt: products.createdAt,
-        sizes: sql`array_agg(distinct ${sizes.value})`,
-        colors: sql`array_agg(distinct ${colors.value})`,
-        images: sql`array_agg(distinct ${images.url})`,
+        sizes: sql<string[]>`array_agg(distinct ${sizes.value})`,
+        colors: sql<string[]>`array_agg(distinct ${colors.value})`,
+        images: sql<string[]>`array_agg(distinct ${images.url})`,
       })
       .from(products)
       .leftJoin(categories, eq(categories.id, products.categoryId))
@@ -66,15 +64,25 @@ const app = new Hono()
         products.id,
         categories.id,
         products.name,
+        products.quantity,
         products.categoryId,
         categories.name,
-        products.price,
+        products.costPrice,
+        products.sellingPrice,
         products.isFeatured,
         products.isArchived,
         products.createdAt
-      );
+      )
+      .execute();
 
-    return c.json({ data });
+    const productsWithDetails = data.map((product) => ({
+      ...product,
+      sizes: product.sizes as unknown as string[],
+      colors: product.colors as unknown as string[],
+      images: product.images as unknown as string[],
+    }));
+
+    return c.json({ data: productsWithDetails });
   })
   .get(
     "/:id",
@@ -86,28 +94,26 @@ const app = new Hono()
     ),
     clerkMiddleware(),
     async (c) => {
-      // const auth = getAuth(c);
       const { id } = c.req.valid("param");
 
       if (!id) {
         return c.json({ error: "Missing id" }, 400);
       }
 
-      // if (!auth?.userId) {
-      //   return c.json({ error: "Unauthorized" }, 401);
-      // }
       const [data] = await db
         .select({
           id: products.id,
           name: products.name,
           categoryId: products.categoryId,
-          price: products.price,
+          costPrice: products.costPrice,
+          sellingPrice: products.sellingPrice,
+          quantity: products.quantity,
           isFeatured: products.isFeatured,
           isArchived: products.isArchived,
           createdAt: products.createdAt,
-          sizes: sql`array_agg(distinct ${sizes.value})`,
-          colors: sql`array_agg(distinct ${colors.value})`,
-          images: sql`array_agg(distinct ${images.url})`,
+          sizes: sql<string[]>`array_agg(distinct ${sizes.value})`,
+          colors: sql<string[]>`array_agg(distinct ${colors.value})`,
+          images: sql<string[]>`array_agg(distinct ${images.url})`,
         })
         .from(products)
         .leftJoin(categories, eq(categories.id, products.categoryId))
@@ -123,17 +129,27 @@ const app = new Hono()
           products.name,
           products.categoryId,
           categories.name,
-          products.price,
+          products.costPrice,
+          products.sellingPrice,
+          products.quantity,
           products.isFeatured,
           products.isArchived,
           products.createdAt
-        );
+        )
+        .execute();
 
       if (!data) {
         return c.json({ error: "Not found" }, 404);
       }
 
-      return c.json({ data });
+      const productWithDetails = {
+        ...data,
+        sizes: data.sizes as unknown as string[],
+        colors: data.colors as unknown as string[],
+        images: data.images as unknown as string[],
+      };
+
+      return c.json({ data: productWithDetails });
     }
   )
   .post(
@@ -153,7 +169,9 @@ const app = new Hono()
         .values({
           id: createId(),
           categoryId: values.categoryId,
-          price: values.price,
+          costPrice: values.costPrice,
+          sellingPrice: values.sellingPrice,
+          quantity: values.quantity,
           name: values.name,
           isFeatured: values.isFeatured,
           isArchived: values.isArchived,
@@ -244,7 +262,9 @@ const app = new Hono()
         .set({
           name: values.name,
           categoryId: values.categoryId,
-          price: values.price,
+          costPrice: values.costPrice,
+          sellingPrice: values.sellingPrice,
+          quantity: values.quantity,
           isFeatured: values.isFeatured,
           isArchived: values.isArchived,
         })

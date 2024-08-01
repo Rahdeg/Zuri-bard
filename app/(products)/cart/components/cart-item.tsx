@@ -1,5 +1,5 @@
 "use client"
-import { Product } from "@/types"
+import { CartProduct, Product } from "@/types"
 import { X } from "lucide-react"
 import Image from "next/image"
 
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface CartItemProps {
-    data: Product
+    data: CartProduct
 }
 
 const CartItem: React.FC<CartItemProps> = ({ data }) => {
@@ -26,6 +26,7 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
     const cart = useCart();
 
 
+
     if (!isMounted) {
         return null;
     }
@@ -37,7 +38,7 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
     return (
         <div className=" flex py-6 border-b">
             <div className=" relative h-24 w-24 rounded-md overflow-hidden sm:h-48 sm:w-48">
-                <Image fill src={data.images[0]?.url} className=" object-cover object-center" alt="" />
+                <Image fill src={data.images[0].url} className=" object-cover object-center" alt="" />
             </div>
             <div className=" relative ml-4 flex flex-1 flex-col justify-between sm:ml-6">
                 <div className=" absolute z-10 right-0 top-0">
@@ -57,7 +58,7 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
                                 className=
                                 "h-10 w-10 rounded-full border border-gray-600"
 
-                                style={{ backgroundColor: data.colors }}
+                                style={{ backgroundColor: data.colors! }}
 
                             ></Button>
                         </div>
@@ -77,7 +78,7 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
 
                     </div>
 
-                    <Currency value={data.price} />
+                    <Currency value={data.sellingPrice} />
                 </div>
             </div>
         </div>
