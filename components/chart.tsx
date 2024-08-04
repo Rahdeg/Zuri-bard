@@ -11,28 +11,18 @@ import { PieVariant } from "./pie-variant";
 
 type Props = {
     data?: {
-        date: string;
-        income: number;
-        expenses: number;
-    }[];
+        name: string;
+        value: number;
+    }[] | undefined;
 }
 
 
 
 export const Chart = ({ data = [] }: Props) => {
-    const [chartType, setChartType] = useState("bar");
+    const [chartType, setChartType] = useState("pie");
     // const { shouldBlock, triggerPaywall } = usePaywall();
 
-    const pieData = [
-        {
-            name: "solo",
-            value: 300
-        },
-        {
-            name: "solomon",
-            value: 200
-        }
-    ];
+
 
     const onTypeChange = (type: string) => {
 
@@ -43,7 +33,7 @@ export const Chart = ({ data = [] }: Props) => {
         <Card className=" border-none drop-shadow-sm">
             <CardHeader className=" flex space-y-2 lg:space-y-0 lg:flex-row lg:items-center justify-between">
                 <CardTitle className=" text-xl line-clamp-1 text-blue-900">
-                    Transactions
+                    Products categories in store
                 </CardTitle>
                 <Select defaultValue={chartType} onValueChange={onTypeChange}>
                     <SelectTrigger className=" lg:w-auto h-9 rounded-md px-3">
@@ -76,8 +66,8 @@ export const Chart = ({ data = [] }: Props) => {
                         </div>
                     ) : (
                         <>
-                            {chartType === "pie" && <PieVariant data={pieData} />}
-                            {chartType === "bar" && <BarVariant data={data} />}
+                            {chartType === "pie" && <PieVariant data={data} />}
+                            {chartType === "bar" && <p>Coming soon</p>}
 
                         </>
                     )}

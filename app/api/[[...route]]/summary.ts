@@ -1,173 +1,206 @@
-// import { z } from "zod";
-// import { Hono } from "hono";
-// import { zValidator } from "@hono/zod-validator";
-// import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
-// import { subDays, parse, differenceInDays } from "date-fns";
-// import { and, desc, eq, gte, lt, lte, sql, sum } from "drizzle-orm";
+import { z } from "zod";
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
+import { subDays, parse, differenceInDays } from "date-fns";
+import { and, desc, eq, gte, lt, lte, sql, sum } from "drizzle-orm";
 
-// import { db } from "@/db/drizzle";
-// import { accounts, categories, transactions } from "@/db/schema";
-// import { calculatePercentageChange, fillMissingDays } from "@/lib/utils";
+import { db } from "@/db/drizzle";
+import {
+  categories,
+  expensis,
+  orderItems,
+  orders,
+  products,
+} from "@/db/schema";
+import { calculatePercentageChange, fillMissingDays } from "@/lib/utils";
 
-// const app = new Hono().get(
-//   "/",
-//   clerkMiddleware(),
-//   zValidator(
-//     "query",
-//     z.object({
-//       from: z.string().optional(),
-//       to: z.string().optional(),
-//       accountId: z.string().optional(),
-//     })
-//   ),
-//   async (c) => {
-//     const auth = getAuth(c);
-//     const { from, to, accountId } = c.req.valid("query");
+const app = new Hono().get(
+  "/",
+  clerkMiddleware(),
+  zValidator(
+    "query",
+    z.object({
+      from: z.string().optional(),
+      to: z.string().optional(),
+    })
+  ),
+  async (c) => {
+    const auth = getAuth(c);
+    const { from, to } = c.req.valid("query");
 
-//     if (!auth?.userId) {
-//       return c.json({ error: "Unauthorized" }, 401);
-//     }
+    if (!auth?.userId) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
 
-//     const defaultTo = new Date();
-//     const defaultFrom = subDays(defaultTo, 30);
+    // const defaultTo = new Date();
+    // const defaultFrom = subDays(defaultTo, 30);
 
-//     const startDate = from
-//       ? parse(from, "yyyy-MM-dd", new Date())
-//       : defaultFrom;
-//     const endDate = to ? parse(to, "yyyy-MM-dd", new Date()) : defaultTo;
+    // const startDate = from
+    //   ? parse(from, "yyyy-MM-dd", new Date())
+    //   : defaultFrom;
+    // const endDate = to ? parse(to, "yyyy-MM-dd", new Date()) : defaultTo;
 
-//     const periodLength = differenceInDays(endDate, startDate) + 1;
-//     const lastPeriodStart = subDays(startDate, periodLength);
-//     const lastPeriodEnd = subDays(endDate, periodLength);
+    // const periodLength = differenceInDays(endDate, startDate) + 1;
+    // const lastPeriodStart = subDays(startDate, periodLength);
+    // const lastPeriodEnd = subDays(endDate, periodLength);
 
-//     async function fetchFinancialData(
-//       userId: string,
-//       startDate: Date,
-//       endDate: Date
-//     ) {
-//       return await db
-//         .select({
-//           income:
-//             sql`SUM(CASE WHEN ${transactions.amount} >= 0 THEN ${transactions.amount} ELSE 0 END)`.mapWith(
-//               Number
-//             ),
-//           expenses:
-//             sql`SUM(CASE WHEN ${transactions.amount} < 0 THEN ${transactions.amount} ELSE 0 END)`.mapWith(
-//               Number
-//             ),
-//           remaining: sum(transactions.amount).mapWith(Number),
-//         })
-//         .from(transactions)
-//         .innerJoin(accounts, eq(transactions.accountId, accounts.id))
-//         .where(
-//           and(
-//             accountId ? eq(transactions.accountId, accountId) : undefined,
-//             eq(accounts.userId, userId),
-//             gte(transactions.date, startDate),
-//             lte(transactions.date, endDate)
-//           )
-//         );
-//     }
+    const defaultTo = new Date();
+    const defaultFrom = subDays(defaultTo, 30);
 
-//     const [currentPeriod] = await fetchFinancialData(
-//       auth.userId,
-//       startDate,
-//       endDate
-//     );
-//     const [lastPeriod] = await fetchFinancialData(
-//       auth.userId,
-//       lastPeriodStart,
-//       lastPeriodEnd
-//     );
+    const startDate = from
+      ? parse(from, "yyyy-MM-dd", new Date())
+      : defaultFrom;
+    const endDate = to ? parse(to, "yyyy-MM-dd", new Date()) : defaultTo;
 
-//     const incomeChange = calculatePercentageChange(
-//       currentPeriod.income,
-//       lastPeriod.income
-//     );
-//     const expensesChange = calculatePercentageChange(
-//       currentPeriod.expenses,
-//       lastPeriod.expenses
-//     );
-//     const remainingChange = calculatePercentageChange(
-//       currentPeriod.remaining,
-//       lastPeriod.remaining
-//     );
+    // Fetch total revenue
+    const totalRevenueQuery = await db
+      .select({
+        total: sql`SUM(${products.sellingPrice})`.mapWith(Number),
+      })
+      .from(orderItems as any)
+      .leftJoin(orders as any, eq(orderItems.orderId, orders.id))
+      .leftJoin(products as any, eq(orderItems.productId, products.id))
+      .where(
+        and(
+          eq(orders.isPaid, true),
+          gte(orders.createdAt, startDate),
+          lte(orders.createdAt, endDate)
+        )
+      );
+    const totalRevenue = totalRevenueQuery[0]?.total || 0;
 
-//     const category = await db
-//       .select({
-//         name: categories.name,
-//         value: sql`SUM(ABS(${transactions.amount}))`.mapWith(Number),
-//       })
-//       .from(transactions)
-//       .innerJoin(accounts, eq(transactions.accountId, accounts.id))
-//       .innerJoin(categories, eq(transactions.categoryId, categories.id))
-//       .where(
-//         and(
-//           accountId ? eq(transactions.accountId, accountId) : undefined,
-//           eq(accounts.userId, auth.userId),
-//           lt(transactions.amount, 0),
-//           gte(transactions.date, startDate),
-//           lte(transactions.date, endDate)
-//         )
-//       )
-//       .groupBy(categories.name)
-//       .orderBy(desc(sql`SUM(ABS(${transactions.amount}))`));
+    // Fetch sold products
+    const soldProducts = await db
+      .select()
+      .from(orderItems as any)
+      .leftJoin(orders as any, eq(orderItems.id, orders.id))
+      .where(
+        and(
+          eq(orders.isPaid, true),
+          gte(orders.createdAt, startDate),
+          lte(orders.createdAt, endDate)
+        )
+      );
 
-//     const topCategories = category.slice(0, 3);
-//     const otherCategories = category.slice(3);
-//     const otherSum = otherCategories.reduce(
-//       (sum, current) => sum + current.value,
-//       0
-//     );
+    // Fetch total order counts
+    const totalOrderCountsQuery = await db
+      .select({
+        count: sql`COUNT(*)`.mapWith(Number),
+      })
+      .from(orders as any)
+      .where(
+        and(gte(orders.createdAt, startDate), lte(orders.createdAt, endDate))
+      );
+    const totalOrderCounts = totalOrderCountsQuery[0]?.count || 0;
 
-//     const finalCategories = topCategories;
-//     if (otherCategories.length > 0) {
-//       finalCategories.push({
-//         name: "Other",
-//         value: otherSum,
-//       });
-//     }
+    // Fetch total products counts
+    const totalProductsCountsQuery = await db
+      .select({
+        count: sql`COUNT(*)`.mapWith(Number),
+      })
+      .from(products as any);
+    const totalProductsCounts = totalProductsCountsQuery[0]?.count || 0;
 
-//     const activeDays = await db
-//       .select({
-//         date: transactions.date,
-//         income:
-//           sql`SUM(CASE WHEN ${transactions.amount} >= 0 THEN ${transactions.amount} ELSE 0 END)`.mapWith(
-//             Number
-//           ),
-//         expenses:
-//           sql`SUM(CASE WHEN ${transactions.amount} < 0 THEN ABS(${transactions.amount}) ELSE 0 END)`.mapWith(
-//             Number
-//           ),
-//       })
-//       .from(transactions)
-//       .innerJoin(accounts, eq(transactions.accountId, accounts.id))
-//       .where(
-//         and(
-//           accountId ? eq(transactions.accountId, accountId) : undefined,
-//           eq(accounts.userId, auth.userId),
-//           gte(transactions.date, startDate),
-//           lte(transactions.date, endDate)
-//         )
-//       )
-//       .groupBy(transactions.date)
-//       .orderBy(transactions.date);
+    // Fetch total products with quantity counts
 
-//     const days = fillMissingDays(activeDays, startDate, endDate);
+    const totalProductsQuantityCountsQuery = await db
+      .select({
+        total: sql`SUM(${products.quantity})`.mapWith(Number),
+      })
+      .from(products as any);
+    const totalProductsQuantityCounts =
+      totalProductsQuantityCountsQuery[0]?.total || 0;
 
-//     return c.json({
-//       data: {
-//         remainingAmount: currentPeriod.remaining,
-//         remainingChange,
-//         incomeAmount: currentPeriod.income,
-//         incomeChange,
-//         expensesAmount: currentPeriod.expenses,
-//         expensesChange,
-//         categories: finalCategories,
-//         days,
-//       },
-//     });
-//   }
-// );
+    // Fetch top selling products
+    const topSelling: any = await db
+      .select({
+        productId: orderItems.productId,
+        totalQuantity: sql`SUM(${orderItems.quantity})`.mapWith(Number),
+      })
+      .from(orderItems as any)
+      .leftJoin(orders as any, eq(orderItems.orderId, orders.id))
+      .leftJoin(products as any, eq(orderItems.productId, products.id))
+      .where(
+        and(
+          eq(orders.isPaid, true),
+          gte(orders.createdAt, startDate),
+          lte(orders.createdAt, endDate)
+        )
+      )
+      .groupBy(orderItems.productId)
+      .orderBy(desc(sql`SUM(${products.quantity})`))
+      .limit(3);
 
-// export default app;
+    // Fetch total expenses
+    const totalProductsCostQuery = await db
+      .select({
+        total: sql`SUM(${products.costPrice} * ${products.pQuantity} )`.mapWith(
+          Number
+        ),
+      })
+      .from(products as any)
+      .where(
+        and(
+          gte(products.createdAt, startDate),
+          lte(products.createdAt, endDate)
+        )
+      );
+
+    const totalProductCost = totalProductsCostQuery[0].total || 0;
+
+    // Fetch total expenses
+    const totalExpensesQuery = await db
+      .select({
+        total: sql`SUM(${expensis.amount})`.mapWith(Number),
+      })
+      .from(expensis as any)
+      .where(
+        and(
+          gte(expensis.createdAt, startDate),
+          lte(expensis.createdAt, endDate)
+        )
+      );
+    const totalExpenses = totalExpensesQuery[0]?.total + totalProductCost;
+
+    // Calculate net profit
+    const netProfit = totalRevenue - totalExpenses;
+
+    // Fetch Pie Data for each category
+    const pieData: any = await db
+      .select({
+        name: categories.name,
+        value:
+          sql`SUM(${products.quantity} * ${products.sellingPrice})`.mapWith(
+            Number
+          ),
+      })
+      .from(products as any)
+      .leftJoin(categories as any, eq(products.categoryId, categories.id))
+      .where(
+        and(
+          gte(products.createdAt, startDate),
+          lte(products.createdAt, endDate)
+        )
+      )
+      .groupBy(categories.id);
+
+    // Construct the summary response
+    const summary = {
+      totalRevenue,
+      soldProducts,
+      totalOrderCounts,
+      totalProductsCounts,
+      topSelling,
+      totalProductCost,
+      totalExpenses,
+      netProfit,
+      pieData,
+      totalProductsQuantityCounts,
+    };
+
+    return c.json({ data: summary });
+  }
+);
+
+export default app;

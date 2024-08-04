@@ -3,6 +3,9 @@ import Image from "next/image";
 import NewCollection from "./_components/collections";
 import Hero from "./_components/hero";
 import TrendingProducts from "./_components/trending-products";
+import Technology from "./_components/technology";
+import WhyChooseUs from "./_components/why-choose-us";
+import Footer from "./_components/footer";
 
 export default function Home() {
   return (
@@ -10,6 +13,9 @@ export default function Home() {
       <Hero />
       <TrendingProducts />
       <NewCollection />
+      <Technology />
+      <WhyChooseUs />
+      <Footer />
     </div>
   );
 }

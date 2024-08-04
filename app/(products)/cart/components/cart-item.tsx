@@ -67,7 +67,7 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
                                 type="button"
                                 variant="outline"
                                 className=
-                                "bg-white border border-[#ED5221] text-black"
+                                " text-black"
 
 
 
@@ -76,9 +76,13 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
                             </Button>
                         </div>
 
+                        <Button variant="outline">
+                            Q {data.quantity}
+                        </Button>
+
                     </div>
 
-                    <Currency value={data.sellingPrice} />
+                    <Currency value={data.sellingPrice * data.quantity} />
                 </div>
             </div>
         </div>

@@ -1,15 +1,19 @@
 "use client"
 import { formatDateRange } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 // import { useGetSummary } from '@/features/summary/api/use-get-summary';
 import { FaPiggyBank } from "react-icons/fa"
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6"
 import { DataCard, DataCardLoading } from './ui/data-card';
 import { ProductDataCard } from './ui/data-product-card ';
+import { useGetSummary } from '@/features/summary/api/use-get-summary';
+import useStockAlert from '@/hooks/stock-level';
 
 export const DataGrid = () => {
-    // const { data, isLoading } = useGetSummary();
+    const { data, isLoading } = useGetSummary();
+
+    console.log(data, "feee");
 
     const params = useSearchParams();
     const to = params.get("to") || undefined;
@@ -17,17 +21,31 @@ export const DataGrid = () => {
 
     const dateRangeLabel = formatDateRange({ to, from });
 
-    // if (isLoading) {
-    //     return (
-    //         <div className=' grid grid-cols-1 lg:grid-cols-3 gap-8 pb-2 mb-8'>
-    //             <DataCardLoading />
-    //             <DataCardLoading />
-    //             <DataCardLoading />
-    //             <DataCardLoading />
+    const { setTotalAvailableStocks } = useStockAlert()
 
-    //         </div>
-    //     )
-    // }
+
+    useEffect(() => {
+        if (data?.totalProductsQuantityCounts) {
+            setTotalAvailableStocks(data?.totalProductsQuantityCounts);
+        }
+
+    }, [data, setTotalAvailableStocks])
+
+
+    if (isLoading) {
+        return (
+            <div className=' grid grid-cols-1 lg:grid-cols-3 gap-8 pb-2 mb-8'>
+                <DataCardLoading />
+                <DataCardLoading />
+                <DataCardLoading />
+
+
+            </div>
+        )
+    }
+
+
+
 
 
 
@@ -36,7 +54,7 @@ export const DataGrid = () => {
 
             <DataCard
                 title="Revenue"
-                value={1000}
+                value={data?.totalRevenue}
                 percentageChange={20}
                 icon={FaPiggyBank}
                 dateRange={dateRangeLabel}
@@ -44,7 +62,7 @@ export const DataGrid = () => {
 
             <DataCard
                 title="Expensis"
-                value={300}
+                value={data?.totalExpenses}
                 percentageChange={10}
                 icon={FaArrowTrendUp}
                 dateRange={dateRangeLabel}
@@ -54,18 +72,12 @@ export const DataGrid = () => {
 
             <DataCard
                 title="Net Profit"
-                value={200}
+                value={data?.netProfit}
                 percentageChange={5}
                 icon={FaArrowTrendDown}
                 dateRange={dateRangeLabel}
             />
 
-            {/* <ProductDataCard
-                title="Products"
-                value={20}
-                percentageChange={5}
-                dateRange={dateRangeLabel}
-            /> */}
 
 
         </div>

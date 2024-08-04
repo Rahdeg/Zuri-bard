@@ -17,9 +17,9 @@ export function convertAmountToMiliunits(amount: number) {
 }
 
 export function formatCurrency(value: number) {
-  return Intl.NumberFormat("en-US", {
+  return Intl.NumberFormat("en-NG", {
     style: "currency",
-    currency: "USD",
+    currency: "NGN",
     minimumFractionDigits: 2,
   }).format(value);
 }
@@ -99,7 +99,7 @@ export function formatPercentage(
     addPrefix: false,
   }
 ) {
-  const result = new Intl.NumberFormat("en-US", {
+  const result = new Intl.NumberFormat("en-NG", {
     style: "percent",
   }).format(value / 100);
 
@@ -134,6 +134,6 @@ export const getMatchingIds = (
 export function transformImages(product: Product): any {
   return {
     ...product,
-    images: product.images.map((image) => ({ url: image })),
+    images: product.images.map((image: any) => ({ url: image })),
   };
 }

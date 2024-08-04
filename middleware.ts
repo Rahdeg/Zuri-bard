@@ -1,19 +1,17 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/admin(.*)",
-  // "/api(.*)"
-]);
-
+// Middleware function
 export default clerkMiddleware((auth, req) => {
-  if (isProtectedRoute(req)) {
+  // Protect any route under /admin
+  if (req.nextUrl.pathname.startsWith("/admin")) {
     auth().protect();
   }
 
   return NextResponse.next();
 });
 
+// Middleware configuration
 export const config = {
-  matcher: ["/((?!.+.[w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/admin/:path*", "/api/:path*", "/trpc/:path*"], // Match all admin routes and API/trpc routes
 };

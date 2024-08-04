@@ -36,54 +36,78 @@ const extendedProductSchema = insertProductSchema
 import { Hono } from "hono";
 
 const app = new Hono()
-  .get("/", clerkMiddleware(), async (c) => {
-    const data = await db
-      .select({
-        id: products.id,
-        name: products.name,
-        categoryId: products.categoryId,
-        categoryName: categories.name,
-        costPrice: products.costPrice,
-        sellingPrice: products.sellingPrice,
-        quantity: products.quantity,
-        isFeatured: products.isFeatured,
-        isArchived: products.isArchived,
-        createdAt: products.createdAt,
-        sizes: sql<string[]>`array_agg(distinct ${sizes.value})`,
-        colors: sql<string[]>`array_agg(distinct ${colors.value})`,
-        images: sql<string[]>`array_agg(distinct ${images.url})`,
+  .get(
+    "/",
+    zValidator(
+      "query",
+      z.object({
+        from: z.string().optional(),
+        to: z.string().optional(),
+        categoryId: z.string().optional(),
+        isFeatured: z.string().optional(),
       })
-      .from(products)
-      .leftJoin(categories, eq(categories.id, products.categoryId))
-      .leftJoin(productSizes, eq(productSizes.productId, products.id))
-      .leftJoin(sizes, eq(sizes.id, productSizes.sizeId))
-      .leftJoin(productColors, eq(productColors.productId, products.id))
-      .leftJoin(colors, eq(colors.id, productColors.colorId))
-      .leftJoin(images, eq(images.productId, products.id))
-      .groupBy(
-        products.id,
-        categories.id,
-        products.name,
-        products.quantity,
-        products.categoryId,
-        categories.name,
-        products.costPrice,
-        products.sellingPrice,
-        products.isFeatured,
-        products.isArchived,
-        products.createdAt
-      )
-      .execute();
+    ),
+    clerkMiddleware(),
+    async (c) => {
+      const { categoryId, isFeatured } = c.req.valid("query");
 
-    const productsWithDetails = data.map((product) => ({
-      ...product,
-      sizes: product.sizes as unknown as string[],
-      colors: product.colors as unknown as string[],
-      images: product.images as unknown as string[],
-    }));
+      // Convert isFeatured to boolean if it is present
+      // const isFeaturedFilter = isFeatured === "true" ? true : undefined;
 
-    return c.json({ data: productsWithDetails });
-  })
+      const data = await db
+        .select({
+          id: products.id,
+          name: products.name,
+          categoryId: products.categoryId,
+          categoryName: categories.name,
+          costPrice: products.costPrice,
+          sellingPrice: products.sellingPrice,
+          quantity: products.quantity,
+          isFeatured: products.isFeatured,
+          isArchived: products.isArchived,
+          createdAt: products.createdAt,
+          sizes: sql<string[]>`array_agg(distinct ${sizes.value})`,
+          colors: sql<string[]>`array_agg(distinct ${colors.value})`,
+          images: sql<string[]>`array_agg(distinct ${images.url})`,
+        })
+        .from(products)
+        .where(
+          and(
+            categoryId ? eq(products.categoryId, categoryId) : undefined,
+            isFeatured ? eq(products.isFeatured, true) : undefined
+          )
+        )
+        .leftJoin(categories, eq(categories.id, products.categoryId))
+        .leftJoin(productSizes, eq(productSizes.productId, products.id))
+        .leftJoin(sizes, eq(sizes.id, productSizes.sizeId))
+        .leftJoin(productColors, eq(productColors.productId, products.id))
+        .leftJoin(colors, eq(colors.id, productColors.colorId))
+        .leftJoin(images, eq(images.productId, products.id))
+        .groupBy(
+          products.id,
+          categories.id,
+          products.name,
+          products.quantity,
+          products.categoryId,
+          categories.name,
+          products.costPrice,
+          products.sellingPrice,
+          products.isFeatured,
+          products.isArchived,
+          products.createdAt
+        )
+        .execute();
+
+      const productsWithDetails = data.map((product) => ({
+        ...product,
+        sizes: product.sizes as unknown as string[],
+        colors: product.colors as unknown as string[],
+        images: product.images as unknown as string[],
+      }));
+
+      return c.json({ data: productsWithDetails });
+    }
+  )
   .get(
     "/:id",
     zValidator(
@@ -172,6 +196,7 @@ const app = new Hono()
           costPrice: values.costPrice,
           sellingPrice: values.sellingPrice,
           quantity: values.quantity,
+          pQuantity: values.quantity,
           name: values.name,
           isFeatured: values.isFeatured,
           isArchived: values.isArchived,
@@ -265,6 +290,7 @@ const app = new Hono()
           costPrice: values.costPrice,
           sellingPrice: values.sellingPrice,
           quantity: values.quantity,
+          pQuantity: values.quantity,
           isFeatured: values.isFeatured,
           isArchived: values.isArchived,
         })
@@ -347,6 +373,70 @@ const app = new Hono()
       }
 
       return c.json({ data });
+    }
+  )
+  .post(
+    "/products",
+    zValidator(
+      "json",
+      z.object({
+        productIds: z.array(z.string()).nonempty(), // Validate an array of strings
+      })
+    ),
+    clerkMiddleware(),
+    async (c) => {
+      // Get the validated product IDs from the request body
+      const { productIds } = c.req.valid("json");
+
+      // Fetch products with the given IDs
+      const data = await db
+        .select({
+          id: products.id,
+          name: products.name,
+          categoryId: products.categoryId,
+          categoryName: categories.name,
+          costPrice: products.costPrice,
+          sellingPrice: products.sellingPrice,
+          quantity: products.quantity,
+          isFeatured: products.isFeatured,
+          isArchived: products.isArchived,
+          createdAt: products.createdAt,
+          sizes: sql<string[]>`array_agg(distinct ${sizes.value})`,
+          colors: sql<string[]>`array_agg(distinct ${colors.value})`,
+          images: sql<string[]>`array_agg(distinct ${images.url})`,
+        })
+        .from(products)
+        .leftJoin(categories, eq(categories.id, products.categoryId))
+        .leftJoin(productSizes, eq(productSizes.productId, products.id))
+        .leftJoin(sizes, eq(sizes.id, productSizes.sizeId))
+        .leftJoin(productColors, eq(productColors.productId, products.id))
+        .leftJoin(colors, eq(colors.id, productColors.colorId))
+        .leftJoin(images, eq(images.productId, products.id))
+        .where(inArray(products.id, productIds))
+        .groupBy(
+          products.id,
+          categories.id,
+          products.name,
+          products.quantity,
+          products.categoryId,
+          categories.name,
+          products.costPrice,
+          products.sellingPrice,
+          products.isFeatured,
+          products.isArchived,
+          products.createdAt
+        )
+        .execute();
+
+      // Map the results to include typed sizes, colors, and images
+      const productsWithDetails = data.map((product) => ({
+        ...product,
+        sizes: product.sizes as unknown as string[],
+        colors: product.colors as unknown as string[],
+        images: product.images as unknown as string[],
+      }));
+
+      return c.json({ data: productsWithDetails });
     }
   );
 

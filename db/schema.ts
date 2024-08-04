@@ -74,6 +74,7 @@ export const products = pgTable("products", {
   sellingPrice: integer("selling_price").notNull(),
   costPrice: integer("cost_price").notNull(),
   quantity: integer("quantity").notNull(),
+  pQuantity: integer("pQuantity").default(1).notNull(),
   isFeatured: boolean("is_featured").default(false).notNull(),
   isArchived: boolean("is_archived").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
@@ -177,6 +178,7 @@ export const orderItems = pgTable("order_items", {
     .references(() => products.id, { onDelete: "cascade" }),
   color: text("color").default(""),
   size: text("size").default(""),
+  quantity: integer("quantity").default(1),
 });
 
 export const orderItemRelations = relations(orderItems, ({ one }) => ({

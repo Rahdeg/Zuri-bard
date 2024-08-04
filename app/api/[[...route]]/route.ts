@@ -9,6 +9,7 @@ import checkout from "./checkout";
 import webhooks from "./webhooks";
 import expensis from "./expensis";
 import admin from "./admin";
+import summary from "./summary";
 
 export const runtime = "nodejs";
 
@@ -24,12 +25,8 @@ const routes = app
   .route("/checkout", checkout)
   .route("/webhooks", webhooks)
   .route("/expensis", expensis)
-  .route("/admin", admin);
-
-// .route("/transactions", transactions)
-// .route("/summary", summary)
-// .route("/plaid", plaid)
-// .route("/subscriptions", subscriptions);
+  .route("/admin", admin)
+  .route("/summary", summary);
 
 export const GET = handle(app);
 export const POST = handle(app);

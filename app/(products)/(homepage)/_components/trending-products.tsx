@@ -1,12 +1,13 @@
 "use client"
 
 import { useState, useRef } from 'react';
-import { useGetProducts } from '@/features/products/api/use-get-products';
 import { ProductCard } from '../../shop/_components/product-card';
+import { useGetFeaturedProducts } from '@/features/products/api/use-get-featured-products';
 
 const TrendingProducts = () => {
-    const productsQuery = useGetProducts();
+    const productsQuery = useGetFeaturedProducts("isFeatured");
     const products = productsQuery.data;
+
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const [scrollPosition, setScrollPosition] = useState(0);

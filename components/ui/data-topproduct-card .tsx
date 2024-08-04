@@ -7,6 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./car
 import { Skeleton } from "./skeleton";
 import { CountUp } from "../count-up";
 import { Button } from "./button";
+import { useGetProductWithIds } from "@/features/products/api/use-get-products-withId";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 
 const boxVariant = cva(
@@ -52,11 +56,23 @@ interface DataCardProps extends BoxVariants, IconVariants {
     value?: number;
     dateRange: string;
     percentageChange?: number;
+    data: {
+        categoryName: string | null,
+        totalQuantity: number | any,
+        sellingPrice: number
+
+    }[]
 }
 
 
 
-export const TopProductDataCard = ({ title, value = 0, dateRange, percentageChange = 0, variant }: DataCardProps) => {
+
+export const TopProductDataCard = ({ title, value = 0, dateRange, percentageChange = 0, variant, data = [] }: DataCardProps) => {
+
+
+
+
+
     return (
         <Card className=" border-none drop-shadow-sm rounded-2xl">
             <CardHeader className=" flex flex-row items-center justify-between gap-x-4">
@@ -72,7 +88,7 @@ export const TopProductDataCard = ({ title, value = 0, dateRange, percentageChan
                             ( <CountUp
                                 preserveValue
                                 start={0}
-                                end={24}
+                                end={value}
                                 decimalPlaces={2}
                             />
                             )
@@ -86,12 +102,22 @@ export const TopProductDataCard = ({ title, value = 0, dateRange, percentageChan
 
 
             </CardHeader>
-            <CardContent>
-
+            <CardContent className=" space-y-3">
+                {
+                    data?.map((item, idx) => (
+                        <Button size="lg" variant="outline" key={idx} className=" flex items-center justify-between gap-x-3  w-full  p-3">
+                            <p>{item?.categoryName}</p>
+                            <p> QTY: {item?.totalQuantity}</p>
+                            <p> {formatCurrency(item?.sellingPrice)}</p>
+                        </Button>
+                    ))
+                }
             </CardContent>
         </Card>
     )
 }
+
+
 
 export const TopProductDataCardLoading = () => {
     return (

@@ -13,7 +13,7 @@ export interface Category {
 export interface Product {
   sizes: string[];
   colors: string[];
-  images: string[];
+  images: Images[] | string[] | any;
   id: string;
   name: string;
   categoryId: string | null;

@@ -14,6 +14,7 @@ const orderSchema = z.object({
       productId: z.string(),
       color: z.string().optional(),
       size: z.string().optional(),
+      quantity: z.number().optional(),
     })
   ),
 });
@@ -49,25 +50,29 @@ const app = new Hono().post(
     const orderId = newOrder[0].id;
 
     const productItems = [];
+
     for (const item of values.items) {
-      const product = await db
+      const productResult = await db
         .select({
           id: products.id,
           name: products.name,
-          price: products.price,
+          price: products.sellingPrice,
         })
         .from(products)
         .where(eq(products.id, item.productId))
         .execute();
 
-      if (product.length === 0) {
+      if (productResult.length === 0) {
         return c.json(
           { error: `Product with ID ${item.productId} not found` },
           404
         );
       }
 
-      productItems.push(...product);
+      const product = productResult[0];
+      const modifiedProduct = { ...product, quantity: item.quantity || 1 };
+
+      productItems.push(modifiedProduct);
 
       await db.insert(orderItems).values({
         id: createId(),
@@ -75,11 +80,12 @@ const app = new Hono().post(
         productId: item.productId,
         color: item.color || "",
         size: item.size || "",
+        quantity: item.quantity || 1,
       });
     }
 
     const line_items = productItems.map((product) => ({
-      quantity: 1,
+      quantity: product.quantity,
       price_data: {
         currency: "NGN",
         product_data: {

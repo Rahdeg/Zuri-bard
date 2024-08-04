@@ -10,8 +10,6 @@ import { NewSizeSheet } from "@/features/sizes/components/new-size-sheet";
 import { EditSizeSheet } from "@/features/sizes/components/edit-size-sheet";
 import { NewColorSheet } from "@/features/colors/components/new-color-sheet";
 import { EditColorSheet } from "@/features/colors/components/edit-color-sheet";
-import { NewProductSheet } from "@/features/products/components/new-product-sheet";
-import { EditProductSheet } from "@/features/products/components/edit-product-sheet";
 import PreviewModal from "@/components/preview-modal";
 import { EditExpensisSheet } from "@/features/expensis/components/edit-expensis-sheet";
 import { NewExpensisSheet } from "@/features/expensis/components/new-expensis-sheet";
@@ -32,8 +30,7 @@ export const SheetProvider = () => {
 
     return (
         <>
-            {/* <NewAccountSheet />
-            <EditAccountSheet /> */}
+
             <NewCategorySheet />
             <EditCategorySheet />
             <NewSizeSheet />
@@ -44,12 +41,8 @@ export const SheetProvider = () => {
             <NewExpensisSheet />
             <EditAdminSheet />
             <NewAdminSheet />
-            <NewProductSheet />
-            <EditProductSheet />
             <PreviewModal />
-            {/* <NewTransactionSheet />
-            <EditTransactionSheet />
-            <SubscriptionModal /> */}
+
         </>
     )
 }

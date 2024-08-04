@@ -155,7 +155,7 @@ const NewProductPage = ({ params }: { params: { productId: string } }) => {
             <ConfirmDialog />
             {
                 isLoading ? (
-                    <div className='flex justify-center items-center h-full w-full'>
+                    <div className='flex justify-center items-center min-h-screen w-full'>
                         <Loader className="size-6 text-slate-300 animate-spin" />
                     </div>
                 ) : (

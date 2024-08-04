@@ -88,8 +88,22 @@ export const columns: ColumnDef<ResponseType>[] = [
       )
     }
   },
+  // {
+  //   accessorKey: "costPrice",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         Cost Price
+  //         <ArrowUpDown className="ml-2 h-4 w-4" />
+  //       </Button>
+  //     )
+  //   }
+  // },
   {
-    accessorKey: "costPrice",
+    accessorKey: "sellingPrice",
     header: ({ column }) => {
       return (
         <Button

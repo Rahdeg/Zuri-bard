@@ -12,7 +12,9 @@ export const extendedProductSchema = insertProductSchema
   .pick({
     name: true,
     categoryId: true,
-    price: true,
+    costPrice: true,
+    sellingPrice: true,
+    quantity: true,
     isFeatured: true,
     isArchived: true,
   })

@@ -1,8 +1,6 @@
 "use client"
 import Currency from '@/components/ui/currency';
 import IconButton from '@/components/ui/icon-button';
-import { useGetProducts } from '@/features/products/api/use-get-products';
-import useCart from '@/hooks/use-cart';
 import usePreviewModal from '@/hooks/use-preview-modal';
 import { transformImages } from '@/lib/utils';
 import { Product } from '@/types';

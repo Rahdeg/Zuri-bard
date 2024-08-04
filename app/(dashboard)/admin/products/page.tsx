@@ -19,14 +19,13 @@ import { useRouter } from 'next/navigation'
 
 const ColorPage = () => {
 
-    const productsQuery = useGetProducts();
+    const productsQuery = useGetProducts(null);
     const products = productsQuery.data || [];
     const deleteProducts = useBulkDeleteProduct();
 
     const disabled = productsQuery.isLoading || deleteProducts.isPending;
     const router = useRouter();
 
-    console.log(products, "pro");
 
 
     if (productsQuery.isLoading) {

@@ -32,7 +32,7 @@ export const useCheckout = () => {
             }
         },
         onError: () => {
-            toast.error("Failed to delete Account");
+            toast.error("Failed to initiate Payments");
         },
     });
 

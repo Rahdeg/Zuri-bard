@@ -1,6 +1,5 @@
 "use client"
 import { useGetAdmins } from '@/features/admin/api/use-get-admins';
-import { useGetProducts } from '@/features/products/api/use-get-products';
 import useStockAlert from '@/hooks/stock-level';
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation';
@@ -13,15 +12,13 @@ const WelcomeMsg = () => {
     const stockLevel = useStockAlert();
 
     const router = useRouter();
-    const productsQuery = useGetProducts();
-    const products = productsQuery.data || [];
 
     const adminQuery = useGetAdmins();
     const admins = adminQuery.data || [];
 
     const currentAdmin = admins.filter(admin => admin.email === user?.emailAddresses[0].emailAddress)
 
-    const unAchivedProducts = products.filter(product => product.isArchived === false).length;
+    const availableProducts = stockLevel.totalAvailableStocks;
 
 
 
@@ -32,12 +29,12 @@ const WelcomeMsg = () => {
                     Welcome Back {isLoaded ? ", " : " "} {user?.firstName ? user?.firstName : currentAdmin[0]?.name ?? ""} 👋🏾
                 </h2>
                 {
-                    unAchivedProducts < stockLevel.stockLevelAlert && (
+                    availableProducts < stockLevel.stockLevelAlert && (
                         <button
                             className=" bg-red-800 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded animate-bounce"
                             onClick={() => router.push("/admin/products")}
                         >
-                            Low Stock <span className=' ml-2'> ({unAchivedProducts})</span>
+                            Low Stock <span className=' ml-2'> ({availableProducts})</span>
                         </button>
                     )
                 }

@@ -53,14 +53,14 @@ type FormValues = z.infer<typeof formSchema>;
 
 type Props = {
     id?: string;
-    initialData: ProductInitialData;
+    initialData: any;
     onSubmit: (values: FormValues) => void;
     onDelete?: () => void;
     disabled?: boolean;
-    categoryOptions: { label: string; value: string }[];
-    onCreateCategory: (name: string) => void;
-    colorOptions: { label: string; value: string }[];
-    sizeOptions: { label: string; value: string }[];
+    categoryOptions?: { label: string; value: string }[];
+    onCreateCategory?: (name: string) => void;
+    colorOptions?: { label: string; value: string }[];
+    sizeOptions?: { label: string; value: string }[];
 };
 
 const ProductForm: React.FC<Props> = ({
@@ -110,10 +110,11 @@ const ProductForm: React.FC<Props> = ({
 
     const handleSubmit = (values: FormValues) => {
 
-        const colorIds = getMatchingIds(selectedColors, colorOptions);
-        const sizeIds = getMatchingIds(selectedSizes, sizeOptions)
+        const colorIds = getMatchingIds(selectedColors, colorOptions!);
+        const sizeIds = getMatchingIds(selectedSizes, sizeOptions!)
 
-        onSubmit({ ...values, colors: colorIds, sizes: sizeIds });
+
+        onSubmit({ ...values, colors: colorIds, sizes: sizeIds, });
 
     };
 
@@ -196,7 +197,7 @@ const ProductForm: React.FC<Props> = ({
                                 <FormLabel>Colors</FormLabel>
                                 <FormControl>
                                     <SelectableButtonForm
-                                        values={colorOptions}
+                                        values={colorOptions!}
                                         selectedOptions={selectedColors}
                                         setSelectedOptions={setSelectedColors}
                                         color
@@ -215,7 +216,7 @@ const ProductForm: React.FC<Props> = ({
                                 <FormLabel>Size</FormLabel>
                                 <FormControl>
                                     <SelectableButtonForm
-                                        values={sizeOptions}
+                                        values={sizeOptions!}
                                         selectedOptions={selectedSizes}
                                         setSelectedOptions={setSelectedSizes}
                                     />

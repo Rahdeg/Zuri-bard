@@ -31,7 +31,7 @@ const Summary = () => {
     }, [searchParams, removeAll])
 
 
-    const totalPrice = items.reduce((total, item) => { return total + Number(item.sellingPrice) }, 0)
+    const totalPrice = items.reduce((total, item) => { return total + Number(item.sellingPrice * item.quantity) }, 0)
 
     const onCheckout = async () => {
 
@@ -39,6 +39,7 @@ const Summary = () => {
             productId: item.id, // renaming `id` to `productId`
             color: item.colors || undefined, // ensuring color is a string or undefined
             size: item.sizes || undefined, // ensuring size is a string or undefined
+            quantity: item.quantity,
         }));
 
         checkout.mutate({ items: productItems });

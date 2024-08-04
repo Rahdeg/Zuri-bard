@@ -74,18 +74,78 @@ app.post("/", async (c) => {
         return c.json({ error: "Order not found or not updated" }, 404);
       }
 
-      const orderItemsResult = await db
-        .select()
+      // const orderItemsResult = await db
+      //   .select()
+      //   .from(orderItems)
+      //   .where(eq(orderItems.orderId, session?.metadata?.orderId!));
+
+      // const productIds = orderItemsResult.map(
+      //   (orderItem) => orderItem.productId
+      // );
+
+      // await db
+      //   .update(products)
+      //   .set({ isArchived: true })
+      //   .where(inArray(products.id, productIds));
+
+      // Get product IDs and quantities from orderItems
+      const productsToUpdate = await db
+        .select({
+          productId: orderItems.productId,
+          quantityOrdered: orderItems.quantity,
+        })
         .from(orderItems)
         .where(eq(orderItems.orderId, session?.metadata?.orderId!));
 
-      const productIds = orderItemsResult.map(
-        (orderItem) => orderItem.productId
-      );
-      await db
-        .update(products)
-        .set({ isArchived: true })
+      // Create a map of product IDs to their ordered quantities
+      const productQuantitiesMap = new Map<string, number | null>();
+      for (const item of productsToUpdate) {
+        productQuantitiesMap.set(item.productId, item.quantityOrdered);
+      }
+
+      // Convert the keys to an array explicitly
+      const productIds = Array.from(productQuantitiesMap.keys());
+
+      // Fetch current quantities for these products
+      const currentQuantities = await db
+        .select({
+          id: products.id,
+          quantity: products.quantity,
+        })
+        .from(products)
         .where(inArray(products.id, productIds));
+
+      // Create a map of product IDs to their current quantities
+      const currentQuantitiesMap = new Map<string, number>();
+      for (const product of currentQuantities) {
+        currentQuantitiesMap.set(product.id, product.quantity);
+      }
+
+      // Convert Map to an array of entries
+      const productQuantitiesArray = Array.from(productQuantitiesMap.entries());
+
+      const updates = [];
+      for (const [productId, orderedQuantity] of productQuantitiesArray) {
+        const currentQuantity = currentQuantitiesMap.get(productId) || 0;
+        const newQuantity = currentQuantity - orderedQuantity!;
+
+        updates.push({
+          id: productId,
+          quantity: newQuantity,
+          isArchived: newQuantity <= 0,
+        });
+      }
+
+      // Perform the updates
+      for (const update of updates) {
+        await db
+          .update(products)
+          .set({
+            quantity: update.quantity,
+            isArchived: update.isArchived,
+          })
+          .where(eq(products.id, update.id));
+      }
 
       console.log("Order and products updated successfully");
     } catch (err) {

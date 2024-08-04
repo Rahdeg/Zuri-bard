@@ -40,7 +40,11 @@ const Hero = () => {
         <div className=' py-16 px-3 lg:px-14 w-full'>
             <div className=' w-full flex flex-col lg:flex-row items-center justify-between '>
                 <div className=' flex flex-col items-start justify-center w-full ' >
-                    <p className=' text-4xl md:text-8xl font-bold jus'>BarbSh<span className='  lg:text-3xl  text-xl px-8 rounded-full lg:px-16 border-[10px] border-[#ED5221] '></span>w</p>
+                    <p className="text-4xl md:text-8xl font-bold flex items-center">
+                        BarbSh
+                        <span className="lg:text-3xl text-xl px-8 lg:py-7 py-3 rounded-full lg:px-16 border-[10px] border-[#ED5221]"></span>
+                        w
+                    </p>
                     <p className='text-4xl md:text-8xl font-bold py-2 tracking-wider'>Collections!</p>
 
                     <div className=' flex items-start justify-between'>
@@ -64,34 +68,10 @@ const Hero = () => {
                     <div className="absolute lg:inset-0   flex items-center justify-center ">
                         <div className="w-96 h-96 bg-[#Feeeea] rounded-full"></div>
                     </div>
-                    <Carousel
-                        className="flex items-center justify-center w-full px-3"
-                        opts={{
-                            align: "center",
-                            loop: true,
-                        }}
-                        setApi={setApi}
-                        plugins={[
-                            Autoplay({
-                                delay: 2000,
-                            }),
-                        ]}
-                    >
-                        <CarouselContent className="-ml-2 md:-ml-4 w-full">
-                            <CarouselItem className="pl-2 md:pl-4">
-                                {/* <Image src="/black.jpg" alt='bl' width={300} height={300} /> */}
-                                A
-                            </CarouselItem>
-                            <CarouselItem className="pl-2 md:pl-4">
-                                {/* <Image src="/brown.jpg" alt='bl' width={300} height={300} /> */}
-                                B
-                            </CarouselItem>
-                            <CarouselItem className="pl-2 md:pl-4">
+                    <div className='relative'>
+                        <Image src="/shopping.svg" alt='happy' width={600} height={600} />
 
-                                C
-                            </CarouselItem>
-                        </CarouselContent>
-                    </Carousel>
+                    </div>
                 </div>
 
 
