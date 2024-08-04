@@ -108,7 +108,7 @@ export const TopProductDataCard = ({ title, value = 0, dateRange, percentageChan
                         <Button size="lg" variant="outline" key={idx} className=" flex items-center justify-between gap-x-3  w-full  p-3">
                             <p>{item?.categoryName}</p>
                             <p> QTY: {item?.totalQuantity}</p>
-                            <p> {formatCurrency(item?.sellingPrice)}</p>
+                            <p> {formatCurrency(item?.sellingPrice * item?.totalQuantity)}</p>
                         </Button>
                     ))
                 }

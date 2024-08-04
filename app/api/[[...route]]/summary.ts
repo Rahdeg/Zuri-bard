@@ -56,7 +56,10 @@ const app = new Hono().get(
     // Fetch total revenue
     const totalRevenueQuery = await db
       .select({
-        total: sql`SUM(${products.sellingPrice})`.mapWith(Number),
+        total:
+          sql`SUM(${products.sellingPrice} * ${orderItems.quantity})`.mapWith(
+            Number
+          ),
       })
       .from(orderItems as any)
       .leftJoin(orders as any, eq(orderItems.orderId, orders.id))

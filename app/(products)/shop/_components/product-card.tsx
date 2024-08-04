@@ -66,7 +66,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     <h3 className="text-lg font-medium">{product.name}</h3>
                     <div className=' flex items-center justify-start gap-x-3'>
                         <Currency value={product.sellingPrice} />
-                        <p className="text-sm text-gray-500">Sold Out {`No`}</p>
+                        <p className="text-sm text-[#ed5221]">
+                            <span className='  mr-1'>
+                                QTY
+                            </span>
+
+                            {
+                                product.quantity < 1 ? "Sold Out {`No`}" : (product.quantity)
+                            }
+                        </p>
                     </div>
                 </div>
 

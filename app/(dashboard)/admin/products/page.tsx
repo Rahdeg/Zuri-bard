@@ -7,10 +7,9 @@ import React from 'react'
 import { DataTable } from '@/components/data-table'
 import { columns } from './columns'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useNewProduct } from '@/features/products/hooks/use-new-product'
-import { useGetProducts } from '@/features/products/api/use-get-products'
 import { useBulkDeleteProduct } from '@/features/products/api/use-bulk-delete-product'
 import { useRouter } from 'next/navigation'
+import { useGetAdminProducts } from '@/features/products/api/use-get-admin-products'
 
 
 
@@ -19,7 +18,7 @@ import { useRouter } from 'next/navigation'
 
 const ColorPage = () => {
 
-    const productsQuery = useGetProducts(null);
+    const productsQuery = useGetAdminProducts(null);
     const products = productsQuery.data || [];
     const deleteProducts = useBulkDeleteProduct();
 

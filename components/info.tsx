@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import useCart from "@/hooks/use-cart";
 import usePreviewModal from "@/hooks/use-preview-modal";
 import QuantityButton from "./quantity-button";
+import { toast } from "sonner";
 
 interface InfoProps {
     data: Product;
@@ -22,6 +23,12 @@ const Info: React.FC<InfoProps> = ({ data }) => {
     const previewModal = usePreviewModal();
 
     const addToCart = () => {
+
+        const cantAdd = value > data.quantity;
+
+        if (cantAdd) {
+            return toast.error("Please select lower Quantity")
+        }
         cart.addItem({ ...data, colors: selectedColor, sizes: selectedSize, quantity: value });
         console.log({ ...data, colors: selectedColor, sizes: selectedSize, quantity: value })
         previewModal.onClose();
@@ -79,7 +86,7 @@ const Info: React.FC<InfoProps> = ({ data }) => {
 
                 </div>
                 <div className="flex flex-col items-start gap-y-4">
-                    <h3 className="font-semibold text-black">Quantity</h3>
+                    <h3 className="font-semibold text-black">Select Quantity</h3>
                     <div className=" items-center justify-start flex w-full">
 
 
@@ -105,6 +112,14 @@ const Info: React.FC<InfoProps> = ({ data }) => {
                                 onClick={() => handleColorClick(color)}
                             ></Button>
                         ))}
+                    </div>
+                </div>
+                <div className="flex items-start flex-col gap-y-4">
+                    <h3 className="font-semibold text-black">Available </h3>
+                    <div className="flex items-center justify-center gap-x-2">
+                        <Button variant="outline">
+                            {data.quantity}
+                        </Button>
                     </div>
                 </div>
             </div>

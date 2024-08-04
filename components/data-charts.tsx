@@ -1,18 +1,13 @@
 "use client"
-// import { useGetSummary } from '@/features/summary/api/use-get-summary'
+
 import React from 'react'
 import { Chart, ChartLoading } from './chart'
-import { DataCard } from './ui/data-card'
-import { FaArrowTrendDown } from 'react-icons/fa6'
 import { useSearchParams } from 'next/navigation'
 import { formatDateRange } from '@/lib/utils'
 import { TopProductDataCard, TopProductDataCardLoading } from './ui/data-topproduct-card '
-import { ProductDataCard } from './ui/data-product-card '
 import { useGetSummary } from '@/features/summary/api/use-get-summary'
-import { useGetProductWithIds } from '@/features/products/api/use-get-products-withId'
-import { useGetProducts } from '@/features/products/api/use-get-products'
-// import { Chart, ChartLoading } from './chart';
-// import { SpendingPie, SpendingPieLoading } from './spending-pie';
+import { useGetAdminProducts } from '@/features/products/api/use-get-admin-products'
+
 
 
 interface Topseller {
@@ -29,7 +24,7 @@ export const DataCharts = () => {
 
 
     const { data, isLoading } = useGetSummary();
-    const { data: products } = useGetProducts(null);
+    const { data: products } = useGetAdminProducts(null);
 
     const topSellingMap = new Map(data?.topSelling.map((item: { productId: any; totalQuantity: any }) => [item.productId, item.totalQuantity]));
 
