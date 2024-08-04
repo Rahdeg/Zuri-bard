@@ -24,12 +24,7 @@ const app = new Hono().post(
   clerkMiddleware(),
   zValidator("json", orderSchema),
   async (c) => {
-    const auth = getAuth(c);
     const values = c.req.valid("json");
-
-    if (!auth?.userId) {
-      return c.json({ error: "unauthorized" }, 401);
-    }
 
     if (!values.items || values.items.length === 0) {
       return c.json({ error: "Product IDs are required" }, 400);
