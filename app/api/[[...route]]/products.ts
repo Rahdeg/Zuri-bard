@@ -74,7 +74,8 @@ const app = new Hono()
         .where(
           and(
             categoryId ? eq(products.categoryId, categoryId) : undefined,
-            isFeatured ? eq(products.isFeatured, true) : undefined
+            isFeatured ? eq(products.isFeatured, true) : undefined,
+            eq(products.isArchived, false)
           )
         )
         .leftJoin(categories, eq(categories.id, products.categoryId))
