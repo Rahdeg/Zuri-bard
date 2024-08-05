@@ -66,7 +66,7 @@ export const ToggleCard = ({
             <div className="rounded-xl bg-muted p-6">
                 <div className="flex items-center justify-between">
                     <p className="font-semibold shrink-0">
-                        {username}, <span className=" ml-2">{label}</span>
+                        {username}
                     </p>
                     <div className="space-y-2 flex items-center justify-center gap-x-2">
                         <Switch

@@ -68,7 +68,7 @@ const Hero = () => {
                     <div className="absolute lg:inset-0   flex items-center justify-center ">
                         <div className="w-96 h-96 bg-[#Feeeea] rounded-full"></div>
                     </div>
-                    <div className='relative'>
+                    <div className='relative px-2  md:px-0'>
                         <Image src="/shopping.svg" alt='happy' width={600} height={600} />
 
                     </div>
