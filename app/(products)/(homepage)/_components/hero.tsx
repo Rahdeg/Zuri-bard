@@ -1,38 +1,13 @@
 "use client"
 import { Button } from '@/components/ui/button'
-import Autoplay from "embla-carousel-autoplay"
 import React from 'react'
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel"
-
-import { type CarouselApi } from "@/components/ui/carousel"
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 
 const Hero = () => {
 
-    const [api, setApi] = React.useState<CarouselApi>()
-    const [current, setCurrent] = React.useState(0)
-    const [count, setCount] = React.useState(0)
-
-
-    React.useEffect(() => {
-        if (!api) {
-            return
-        }
-
-        setCount(api.scrollSnapList().length)
-        setCurrent(api.selectedScrollSnap() + 1)
-
-        api.on("select", () => {
-            setCurrent(api.selectedScrollSnap() + 1)
-        })
-    }, [api]);
+    const router = useRouter();
 
 
 
@@ -52,7 +27,7 @@ const Hero = () => {
                             Discover our stylish and comfortable shoes, perfectly for every occasion and need.
                         </p>
 
-                        <Button className=' rounded-3xl bg-[#ED5221] text-white'>
+                        <Button className=' rounded-3xl bg-[#ED5221] text-white' onClick={() => router.push("/shop")}>
                             Shop Now
                         </Button>
 

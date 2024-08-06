@@ -1,7 +1,11 @@
+"use client"
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 const WhyChooseUs = () => {
+
+    const router = useRouter();
     return (
         <div className="py-16 px-3 lg:px-14 w-full">
             <div className="flex flex-col md:flex-row">
@@ -15,7 +19,7 @@ const WhyChooseUs = () => {
                     <p className=" md:text-base mb-6 text-[#666565]">
                         The LuxeState Difference. Our Products Are Crafted To Order In Small Batches And Shipped Directly To You. Theres Never Unsold Inventory, No Middlemen Or High Markups To Cover Costs.
                     </p>
-                    <button className="bg-transparent text-orange-500 border border-orange-500 rounded-full w-2/5 px-6 py-2 mb-4">
+                    <button onClick={() => router.push("/shop")} className="bg-transparent text-orange-500 border border-orange-500 rounded-full w-2/5 px-6 py-2 mb-4">
                         Shop Now
                     </button>
                     <div className="relative mt-20">
